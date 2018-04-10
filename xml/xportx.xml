@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/xportx/task</path>
+    <page_callback>CRM_Bpk_Form_Settings</page_callback>
+    <title>Export Contacts (via XPortX)</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

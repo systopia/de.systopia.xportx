@@ -1,4 +1,4 @@
-Package: de.systopia.xxport
+Package: de.systopia.xportx
 Copyright (C) 2018, systopia <endres@systopia.de>
 Licensed under the GNU Affero Public License 3.0 (below).
 

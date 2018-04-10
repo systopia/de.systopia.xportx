@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<extension key="de.systopia.xxport" type="module">
-  <file>xxport</file>
-  <name>Extensibale Export</name>
+<extension key="de.systopia.xportx" type="module">
+  <file>xportx</file>
+  <name>Extensible Export</name>
   <description>SYSTOPIA's modular export extension</description>
   <license>AGPL-3.0</license>
   <maintainer>
@@ -9,9 +9,9 @@
     <email>endres@systopia.de</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">https://github.com/systopia/de.systopia.xxport</url>
-    <url desc="Documentation">https://github.com/systopia/de.systopia.xxport</url>
-    <url desc="Support">https://github.com/systopia/de.systopia.xxport/issues</url>
+    <url desc="Main Extension Page">https://github.com/systopia/de.systopia.xportx</url>
+    <url desc="Documentation">https://github.com/systopia/de.systopia.xportx</url>
+    <url desc="Support">https://github.com/systopia/de.systopia.xportx/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate></releaseDate>
@@ -22,6 +22,6 @@
   </compatibility>
   <comments></comments>
   <civix>
-    <namespace>CRM/Xxport</namespace>
+    <namespace>CRM/xportx</namespace>
   </civix>
 </extension>
