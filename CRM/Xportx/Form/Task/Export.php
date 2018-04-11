@@ -32,15 +32,16 @@ class CRM_Xportx_Form_Task_Export extends CRM_Contact_Form_Task {
     // init export object
     // TODO: configuration should come from $_REQUEST
     $configuration = array(
+      'configuration' => array(),
       'modules' => array(
         array(
           'class'  => 'CRM_Xportx_Module_ContactBase',
           'config' => array()),
       ),
-      'exporter' => array(
+      'exporter' =>
         array(
           'class'  => 'CRM_Xportx_Exporter_CSV',
-          'config' => array()),
+          'config' => array(),
       )
     );
     $this->export = new CRM_Xportx_Export($configuration);
@@ -55,6 +56,6 @@ class CRM_Xportx_Form_Task_Export extends CRM_Contact_Form_Task {
 
 
   function postProcess() {
-    $this->export->writeToStream();
+    $this->export->writeToStream($this->_contactIds);
   }
 }

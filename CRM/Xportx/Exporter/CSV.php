@@ -34,4 +34,21 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
     return 'export.csv';
   }
 
+  /**
+   * Write the data DAO to the given file
+   */
+  public function writeToFile($data, $file_name) {
+    $handle = fopen($file_name, 'w');
+
+    // TODO: encoding
+
+    // compile header + write
+    $fields = $this->export->getFieldList();
+    fputcsv($handle, $fields);
+
+    // now
+    while ($data->fetch()) {
+      // TODO
+    }
+  }
 }

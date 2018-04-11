@@ -26,6 +26,7 @@ class CRM_Xportx_Export {
 
   /**
    * Create an export object with the given configuration data. Format is:
+   * 'configuration'  => {...}
    * 'modules'  => [{
    *   'class'  => 'CRM_Xportx_Module_ContactBase',
    *   'prefix' => '',
@@ -69,9 +70,35 @@ class CRM_Xportx_Export {
   }
 
   /**
+   * This function runs the generated SQL
+   */
+  public function generateSelectSQL($contact_ids) {
+    // collect
+    $selects = array();
+    $joins   = array();
+    $wheres  = array();
+    foreach ($this->modules as $module) {
+      $module->addJoins($joins);
+      $module->addSelects($selects);
+      $module->addWheres($wheres);
+    }
+
+    // add the contact ID list
+    $contact_list = implode(',', $contact_ids);
+    $wheres[] = ("contact.id IN ({$contact_list})");
+
+    $sql = 'SELECT ' . implode(', ', $selects);
+    $sql .= ' FROM civicrm_contact contact ';
+    $sql .= implode(' ', $joins);
+    $sql .= ' WHERE (' . implode(') AND (', $wheres) . ')';
+    $sql .= ' GROUP BY contact.id;';
+    return $sql;
+  }
+
+  /**
    * Run the export and write the result to the PHP out stream
    */
-  public function writeToStream() {
+  public function writeToStream($contact_ids) {
     // WRITE HTML download header
     header('Content-Type: ' . $this->exporter->getMimeType());
     header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -86,7 +113,9 @@ class CRM_Xportx_Export {
     }
 
     // get the data
-    $data = $export->getData();
+    $sql = $this->generateSelectSQL($contact_ids);
+    error_log($sql);
+    $data = CRM_Core_DAO::executeQuery($sql);
 
     // make the exporter write it to the stream
     $this->exporter->writeToFile($data, "php://output");
@@ -101,14 +130,26 @@ class CRM_Xportx_Export {
   protected function getInstance($class_name, $configuration) {
     if (class_exists($class_name)) {
       $instance = new $class_name();
-      $instance->init($configuration);
+      $instance->init($configuration, $this);
       return $instance;
     } else {
       return NULL;
     }
   }
 
-
+  /**
+   * get the unique ID of the module instance in this export context
+   * currently implemented as index in the modules list
+   */
+  public function getModuleID($module) {
+    for ($i=0; $i < count($this->modules); $i++) {
+      if ($this->modules[$i] === $module) {
+        return $i;
+      }
+    }
+    // fallback: use the object pointer
+    return (int) $module;
+  }
 
 
 

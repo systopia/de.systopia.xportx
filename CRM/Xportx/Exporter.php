@@ -21,8 +21,10 @@ use CRM_Xportx_ExtensionUtil as E;
 abstract class CRM_Xportx_Exporter {
 
   protected $config;
+  protected $export;
 
-  public function init($config) {
+  public function init($config, $export) {
+    $this->export = $export;
     $this->config = $config;
   }
 
@@ -36,4 +38,8 @@ abstract class CRM_Xportx_Exporter {
    */
   abstract public function getFileName();
 
+  /**
+   * write all data to the given file
+   */
+  abstract public function writeToFile($data, $file_name);
 }
