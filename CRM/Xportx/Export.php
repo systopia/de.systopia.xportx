@@ -114,7 +114,6 @@ class CRM_Xportx_Export {
 
     // get the data
     $sql = $this->generateSelectSQL($contact_ids);
-    error_log($sql);
     $data = CRM_Core_DAO::executeQuery($sql);
 
     // make the exporter write it to the stream
@@ -151,6 +150,38 @@ class CRM_Xportx_Export {
     return (int) $module;
   }
 
+  /**
+   * Get a list of all fields.
+   *
+   * @return array(array('key' => key, 'label' -> 'header'),...)
+   */
+  public function getFieldList() {
+    $field_list = array();
+
+    for ($i=0; $i < count($this->modules); $i++) {
+      $module = $this->modules[$i];
+      $key_prefix = "module{$i}_";
+      $module_fields = $module->getFieldList();
+      foreach ($module_fields as $module_field) {
+        $module_field['key'] = $key_prefix . $module_field['key'];
+        $field_list[] = $module_field;
+      }
+    }
+    return $field_list;
+  }
+
+  /**
+   * Get the value for the given key form the given record
+   */
+  public function getFieldValue($record, $key) {
+    $prefix_length = strpos($key, '_', 6);
+    $module_index  = substr($key, 6, $prefix_length - 6);
+    if (isset($this->modules[$module_index])) {
+      return $this->modules[$module_index]->getFieldValue($record, substr($key, $prefix_length + 1));
+    } else {
+      return 'ERROR';
+    }
+  }
 
 
   /**

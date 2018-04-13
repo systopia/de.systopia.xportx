@@ -35,6 +35,13 @@ abstract class CRM_Xportx_Module {
   public abstract function getPreferredAlias();
 
   /**
+   * Get a list of all fields.
+   *
+   * @return array(array('key' => key, 'label' -> 'header'),...)
+   */
+  public abstract function getFieldList();
+
+  /**
    * add this module's select clauses to the list
    * they can only refer to the main contact table
    * "contact" or this module's joins
@@ -73,7 +80,48 @@ abstract class CRM_Xportx_Module {
    * Get a uniqe alias for the given (internal) name
    * $name must be all lowercase chars: [a-z]+
    */
-  public function getAlias($name) {
+  protected function getAlias($name) {
     return $this->getPreferredAlias() . $this->getID() . '_' . $name;
+  }
+
+  /**
+   * Get a uniqe alias for the given (internal) name
+   * $name must be all lowercase chars: [a-z]+
+   */
+  protected function getValuePrefix() {
+    return $this->getAlias('val_');
+  }
+
+
+
+  /**
+   * Get the value for the given key form the given record
+   */
+  public function getFieldValue($record, $key) {
+    // generic function, override for custom functionality
+    $value_key = $this->getValuePrefix() . $key;
+    if (property_exists($record, $value_key)) {
+      return $record->$value_key;
+    } else {
+      return 'ERROR';
+    }
+  }
+
+
+  /**
+   * helper function to generate join of OptionValues
+   *
+   * @param $option_group_name   the name of the option group
+   * @param $option_value_source SQL term containing the value
+   * @param $alias               alias to be used for the civicrm_option_value
+   */
+  protected function generateOptionValueJoin($option_group_name, $option_value_source, $alias) {
+    // get group id (TODO: cache?)
+    $group_id = CRM_Core_DAO::singleValueQuery("SELECT id FROM civicrm_option_group WHERE name = %1",
+      array(1 => array($option_group_name, 'String')));
+    if (empty($group_id)) {
+      throw new Exception(E::ts("Unknown option group '%1'!", array(1 => $option_group_name)));
+    }
+    return "LEFT JOIN civicrm_option_value {$alias} ON {$alias}.value = {$option_value_source} AND option_group_id = {$group_id}";
   }
 }
