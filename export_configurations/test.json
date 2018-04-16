@@ -1,0 +1,18 @@
+{
+  "title": "Demo Config",
+  "configuration": {
+
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_CSV",
+    "config": {
+    }
+  }
+}
