@@ -114,6 +114,7 @@ class CRM_Xportx_Export {
 
     // get the data
     $sql = $this->generateSelectSQL($contact_ids);
+    // error_log($sql);
     $data = CRM_Core_DAO::executeQuery($sql);
 
     // make the exporter write it to the stream

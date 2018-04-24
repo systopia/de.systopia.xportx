@@ -1,0 +1,133 @@
+{
+  "title": "Externer Briefversand",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "addressee_display",
+            "label": "Adressat"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          },
+          {
+            "key": "last_name",
+            "label": "Nachname"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_AddressOrganisation",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "display_name",
+            "label": "Hauptadresse gehört zu"
+          },
+          {
+            "key": "organisation_name_1",
+            "label": "Name Zeile 1"
+          },
+          {
+            "key": "organisation_name_2",
+            "label": "Name Zeile 2"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Address",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "street_address",
+            "label": "Straße"
+          },
+          {
+            "key": "postal_code",
+            "label": "Postleitzahl"
+          },
+          {
+            "key": "city",
+            "label": "Stadt"
+          },
+          {
+            "key": "country",
+            "label": "Land",
+            "ts": true,
+            "ts_domain": "country"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "location_type_id": 6,
+          "primary": false
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "Privat-E-Mail"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_CustomGroup",
+      "config": {
+        "params": {
+          "group_name": "more_greetings_group"
+        },
+        "fields": [
+          {
+            "key": "greeting_field_1",
+            "label": "Formell: mit Titel"
+          },
+          {
+            "key": "greeting_field_2",
+            "label": "Informell: Du"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_CSV",
+    "config": {
+      "encoding": "CP1252",
+      "delimiter": ";"
+    }
+  }
+}

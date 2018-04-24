@@ -75,7 +75,7 @@ class CRM_Xportx_Form_Task_Export extends CRM_Contact_Form_Task {
     $folder = __DIR__ . '/../../../../export_configurations';
     $files = scandir($folder);
     foreach ($files as $file) {
-      if (preg_match("#[a-z_]+[.]json#", $file)) {
+      if (preg_match("#[a-z0-9_]+[.]json#", $file)) {
         // this is a json file
         $content = file_get_contents($folder . DIRECTORY_SEPARATOR . $file);
         $config = json_decode($content, TRUE);

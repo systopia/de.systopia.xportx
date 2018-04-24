@@ -39,7 +39,10 @@ abstract class CRM_Xportx_Module {
    *
    * @return array(array('key' => key, 'label' -> 'header'),...)
    */
-  public abstract function getFieldList();
+  public function getFieldList() {
+    // override if necessary
+    return $this->config['fields'];
+  }
 
   /**
    * add this module's select clauses to the list

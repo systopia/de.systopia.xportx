@@ -16,16 +16,16 @@
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
- * Provides contact base data
+ * Provides contact email data
  */
-class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
+class CRM_Xportx_Module_Email extends CRM_Xportx_Module {
 
   /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
    */
   public function getPreferredAlias() {
-    return 'cbase';
+    return 'email';
   }
 
   /**
@@ -35,17 +35,15 @@ class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join contact table anyway
-    $contact_alias = $this->getAlias('contact');
-    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = contact.id";
-
-    // join prefix option group if needed
-    foreach ($this->config['fields'] as $field_spec) {
-      if ($field_spec['key'] == 'prefix') {
-        $prefix_alias = $this->getAlias('prefix');
-        $joins[] = $this->generateOptionValueJoin('individual_prefix', "{$contact_alias}.prefix_id", $prefix_alias);
-        break;
-      }
+    $email_alias = $this->getAlias('email');
+    $base_join = "LEFT JOIN civicrm_email {$email_alias} ON {$email_alias}.contact_id = contact.id";
+    if (!empty($this->config['params']['location_type_id'])) {
+      $base_join .= " AND {$email_alias}.location_type_id = " . (int) $this->config['params']['location_type_id'];
     }
+    if (!empty($this->config['params']['primary'])) {
+      $base_join .= " AND {$email_alias}.is_primary = 1";
+    }
+    $joins[] = $base_join;
   }
 
   /**
@@ -54,21 +52,21 @@ class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
    * "contact" or this module's joins
    */
   public function addSelects(&$selects) {
-    $contact_alias = $this->getAlias('contact');
+    $email_alias = $this->getAlias('email');
     $value_prefix  = $this->getValuePrefix();
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
         // process exeptions...
-        case 'prefix':
-          $prefix_alias = $this->getAlias('prefix');
-          $selects[] = "{$prefix_alias}.label AS {$value_prefix}prefix";
-          break;
+        // case 'country':
+        //   $prefix_alias = $this->getAlias('country');
+        //   $selects[] = "{$prefix_alias}.name AS {$value_prefix}country";
+        //   break;
 
         default:
           // the default ist a column from the contact table
-          $selects[] = "{$contact_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+          $selects[] = "{$email_alias}.{$field_name} AS {$value_prefix}{$field_name}";
           break;
       }
     }

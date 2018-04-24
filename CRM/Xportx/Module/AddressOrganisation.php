@@ -16,16 +16,17 @@
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
- * Provides contact base data
+ * Specialised module for HBS' two-line organisation name
+ * @todo move to HBS extension
  */
-class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
+class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
 
   /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
    */
   public function getPreferredAlias() {
-    return 'cbase';
+    return 'hbsorg';
   }
 
   /**
@@ -35,17 +36,27 @@ class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join contact table anyway
-    $contact_alias = $this->getAlias('contact');
-    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = contact.id";
-
-    // join prefix option group if needed
-    foreach ($this->config['fields'] as $field_spec) {
-      if ($field_spec['key'] == 'prefix') {
-        $prefix_alias = $this->getAlias('prefix');
-        $joins[] = $this->generateOptionValueJoin('individual_prefix', "{$contact_alias}.prefix_id", $prefix_alias);
-        break;
-      }
+    $address_alias = $this->getAlias('address');
+    $address_join = "LEFT JOIN civicrm_address {$address_alias} ON {$address_alias}.contact_id = contact.id";
+    if (!empty($this->config['params']['location_type_id'])) {
+      $address_join .= " AND {$address_alias}.location_type_id = " . (int) $this->config['params']['location_type_id'];
     }
+    if (!empty($this->config['params']['primary'])) {
+      $address_join .= " AND {$address_alias}.is_primary = 1";
+    }
+    $joins[] = $address_join;
+
+    // join master
+    $master_alias = $this->getAlias('master');
+    $joins[] = "LEFT JOIN civicrm_address {$master_alias} ON {$master_alias}.id = {$address_alias}.master_id";
+
+    // then join the contact
+    $contact_alias = $this->getAlias('contact');
+    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = {$master_alias}.contact_id";
+
+    // finally join the civicrm_value_organisation_name table
+    $orgname_alias = $this->getAlias('masterorg');
+    $joins[] = "LEFT JOIN civicrm_value_organisation_name {$orgname_alias} ON {$orgname_alias}.entity_id = {$contact_alias}.id";
   }
 
   /**
@@ -55,20 +66,27 @@ class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
    */
   public function addSelects(&$selects) {
     $contact_alias = $this->getAlias('contact');
+    $orgname_alias = $this->getAlias('masterorg');
     $value_prefix  = $this->getValuePrefix();
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
         // process exeptions...
-        case 'prefix':
-          $prefix_alias = $this->getAlias('prefix');
-          $selects[] = "{$prefix_alias}.label AS {$value_prefix}prefix";
+        case 'display_name':
+          $selects[] = "{$contact_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+          break;
+
+        case 'organisation_name_1':
+          $selects[] = "{$orgname_alias}.row_1 AS {$value_prefix}{$field_name}";
+          break;
+
+        case 'organisation_name_2':
+          $selects[] = "{$orgname_alias}.row_2 AS {$value_prefix}{$field_name}";
           break;
 
         default:
-          // the default ist a column from the contact table
-          $selects[] = "{$contact_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+          // there's no default here
           break;
       }
     }
