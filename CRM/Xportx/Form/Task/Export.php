@@ -69,10 +69,11 @@ class CRM_Xportx_Form_Task_Export extends CRM_Contact_Form_Task {
    * get all currently stored export configurations
    */
   protected function getExportConfigurations() {
-    // find all export configurations in folder 'export_configurations'
+    // find all export configurations in folder 'xportx_configurations'
     $configurations = array();
 
-    $folder = __DIR__ . '/../../../../export_configurations';
+    // TODO: scan *all* xportx_configurations folders
+    $folder = __DIR__ . '/../../../../xportx_configurations';
     $files = scandir($folder);
     foreach ($files as $file) {
       if (preg_match("#[a-z0-9_]+[.]json#", $file)) {

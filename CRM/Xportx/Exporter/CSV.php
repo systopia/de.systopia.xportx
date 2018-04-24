@@ -31,7 +31,17 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
    * get the proposed file name
    */
   public function getFileName() {
-    return 'export.csv';
+    if (empty($this->config['file_name'])) {
+      return 'export.csv';
+    }
+
+    // use file name
+    $file_name = $this->config['file_name'];
+
+    // replace tokens
+    $file_name = preg_replace("#\{date\}#", date('YmdHis'), $file_name);
+
+    return $file_name;
   }
 
   /**
