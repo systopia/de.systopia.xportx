@@ -69,7 +69,7 @@
             "key": "country",
             "label": "Land",
             "ts": true,
-            "ts_domain": "country"
+            "ts_params": {"context": "country"}
           }
         ]
       }

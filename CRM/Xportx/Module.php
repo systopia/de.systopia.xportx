@@ -100,11 +100,19 @@ abstract class CRM_Xportx_Module {
   /**
    * Get the value for the given key form the given record
    */
-  public function getFieldValue($record, $key) {
+  public function getFieldValue($record, $key, $field) {
     // generic function, override for custom functionality
     $value_key = $this->getValuePrefix() . $key;
     if (property_exists($record, $value_key)) {
-      return $record->$value_key;
+      // get value
+      $value = $record->$value_key;
+
+      // translate the value
+      if (!empty($field['ts'])) {
+        $params = CRM_Utils_Array::value('ts_params', $field, array());
+        $value = ts($value, $params);
+      }
+      return $value;
     } else {
       return 'ERROR';
     }

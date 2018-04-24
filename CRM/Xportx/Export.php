@@ -174,11 +174,12 @@ class CRM_Xportx_Export {
   /**
    * Get the value for the given key form the given record
    */
-  public function getFieldValue($record, $key) {
+  public function getFieldValue($record, $field) {
+    $key = $field['key'];
     $prefix_length = strpos($key, '_', 6);
     $module_index  = substr($key, 6, $prefix_length - 6);
     if (isset($this->modules[$module_index])) {
-      return $this->modules[$module_index]->getFieldValue($record, substr($key, $prefix_length + 1));
+      return $this->modules[$module_index]->getFieldValue($record, substr($key, $prefix_length + 1), $field);
     } else {
       return 'ERROR';
     }
