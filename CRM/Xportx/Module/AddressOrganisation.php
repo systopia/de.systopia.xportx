@@ -54,9 +54,14 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
     $contact_alias = $this->getAlias('contact');
     $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = {$master_alias}.contact_id";
 
-    // finally join the civicrm_value_organisation_name table
+    // finally join the civicrm_value_organisation_name table:
+    //  once for the address master:
     $orgname_alias = $this->getAlias('masterorg');
     $joins[] = "LEFT JOIN civicrm_value_organisation_name {$orgname_alias} ON {$orgname_alias}.entity_id = {$contact_alias}.id";
+
+    // once for the organisation itself
+    $selforg_alias = $this->getAlias('selforg');
+    $joins[] = "LEFT JOIN civicrm_value_organisation_name {$selforg_alias} ON {$selforg_alias}.entity_id = contact.id";
   }
 
   /**
@@ -67,6 +72,7 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
   public function addSelects(&$selects) {
     $contact_alias = $this->getAlias('contact');
     $orgname_alias = $this->getAlias('masterorg');
+    $selforg_alias = $this->getAlias('selforg');
     $value_prefix  = $this->getValuePrefix();
 
     foreach ($this->config['fields'] as $field_spec) {
@@ -74,15 +80,15 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
       switch ($field_name) {
         // process exeptions...
         case 'display_name':
-          $selects[] = "{$contact_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+          $selects[] = "IF(contact.contact_type = 'Organization', contact.display_name, {$contact_alias}.{$field_name}) AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_1':
-          $selects[] = "{$orgname_alias}.row_1 AS {$value_prefix}{$field_name}";
+          $selects[] = "IF(contact.contact_type = 'Organization', {$selforg_alias}.row_1, {$orgname_alias}.row_1) AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_2':
-          $selects[] = "{$orgname_alias}.row_2 AS {$value_prefix}{$field_name}";
+          $selects[] = "IF(contact.contact_type = 'Organization', {$selforg_alias}.row_2, {$orgname_alias}.row_2) AS {$value_prefix}{$field_name}";
           break;
 
         default:

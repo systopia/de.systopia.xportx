@@ -78,13 +78,13 @@
       "class": "CRM_Xportx_Module_Email",
       "config": {
         "params": {
-          "location_type_id": false,
-          "primary": true
+          "location_type_id": 8,
+          "primary": false
         },
         "fields": [
           {
             "key": "email",
-            "label": "E-Mail"
+            "label": "E-Mail (geschäftlich)"
           }
         ]
       }
@@ -99,7 +99,7 @@
         "fields": [
           {
             "key": "email",
-            "label": "Privat-E-Mail"
+            "label": "E-Mail (privat)"
           }
         ]
       }
