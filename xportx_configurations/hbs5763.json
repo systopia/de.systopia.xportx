@@ -112,11 +112,11 @@
         },
         "fields": [
           {
-            "key": "greeting_field_1",
+            "key": "greeting_field_2",
             "label": "Formell: mit Titel"
           },
           {
-            "key": "greeting_field_2",
+            "key": "greeting_field_4",
             "label": "Informell: Du"
           }
         ]
