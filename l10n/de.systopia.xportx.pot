@@ -1,0 +1,19 @@
+#: CRM/Xportx/Form/Task/Export.php CRM/Xportx/Form/Task/Export.php
+msgid "Export %1 Contacts"
+msgstr ""
+
+#: CRM/Xportx/Form/Task/Export.php CRM/Xportx/Form/Task/Export.php
+msgid "Export"
+msgstr ""
+
+#: CRM/Xportx/Module.php CRM/Xportx/Module.php
+msgid "Unknown option group '%1'!"
+msgstr ""
+
+#: xportx.php xportx.php
+msgid "Export (Custom Presets)"
+msgstr ""
+
+#: CRM/Xportx/Form/Task/Export.php
+msgid "Preset"
+msgstr ""

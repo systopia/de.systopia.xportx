@@ -27,7 +27,7 @@ use CRM_Xportx_ExtensionUtil as E;
 function xportx_civicrm_searchTasks($objectType, &$tasks) {
   if ($objectType == 'contact') {
     $tasks[] = array(
-        'title' => E::ts('Export (via XPortX)'),
+        'title' => E::ts('Export (Custom Presets)'),
         'class' => 'CRM_Xportx_Form_Task_Export',
         'result' => false);
   }

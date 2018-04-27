@@ -37,7 +37,7 @@ class CRM_Xportx_Form_Task_Export extends CRM_Contact_Form_Task {
     // add the config selector
     $this->addElement('select',
                       'export_configuration',
-                      E::ts("Configuration"),
+                      E::ts("Preset"),
                       $configuration_list,
                       array('class' => 'huge'),
                       TRUE);
