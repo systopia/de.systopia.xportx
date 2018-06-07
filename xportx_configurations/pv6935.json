@@ -1,0 +1,48 @@
+{
+  "title": "Versandliste",
+  "description": "Exportiert die Magazin Versandliste. Dabei wird die 'Magazin' Adresse bevorzugt, falls sie existiert.",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_AddressHierarchy",
+      "config": {
+        "params": {
+          "hierarchy": ["6", "primary"]
+        },
+        "fields": [
+          {
+            "key": "supplemental_address_1",
+            "label": "Adresszusatz"
+          },
+          {
+            "key": "street_address",
+            "label": "Strasse"
+          },
+          {
+            "key": "postal_code",
+            "label": "PLZ"
+          },
+          {
+            "key": "city",
+            "label": "Ort"
+          },
+          {
+            "key": "country",
+            "label": "Land",
+            "ts": true,
+            "ts_params": {"context": "country"}
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_CSV",
+    "config": {
+      "file_name": "Versandliste-{date}.csv",
+      "encoding": "UTF-8",
+      "delimiter": ","
+    }
+  }
+}

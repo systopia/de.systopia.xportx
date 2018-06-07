@@ -127,8 +127,8 @@
     "class": "CRM_Xportx_Exporter_CSV",
     "config": {
       "file_name": "Briefversand-{date}.csv",
-      "encoding": "CP1252",
-      "delimiter": ";"
+      "encoding": "UTF-8",
+      "delimiter": ","
     }
   }
 }

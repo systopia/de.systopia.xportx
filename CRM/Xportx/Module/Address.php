@@ -67,7 +67,7 @@ class CRM_Xportx_Module_Address extends CRM_Xportx_Module {
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
-        // process exeptions...
+        // process exceptions...
         case 'country':
           $prefix_alias = $this->getAlias('country');
           $selects[] = "{$prefix_alias}.name AS {$value_prefix}country";
