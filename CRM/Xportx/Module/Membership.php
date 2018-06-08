@@ -34,9 +34,19 @@ class CRM_Xportx_Module_Membership extends CRM_Xportx_Module {
    * "contact" or other joins from within the module
    */
   public function addJoins(&$joins) {
-    // always join membership table
+    // join membership table (with parameters)
     $membership_alias = $this->getAlias('membership');
-    $joins[] = "LEFT JOIN civicrm_membership {$membership_alias} ON {$membership_alias}.contact_id = contact.id";
+    $membership_join = "LEFT JOIN civicrm_membership {$membership_alias} ON {$membership_alias}.contact_id = contact.id";
+    if (!empty($this->config['params']['membership_status_ids'])) {
+      $status_ids = implode(',', $this->config['params']['membership_status_ids']);
+      $membership_join .= " AND {$membership_alias}.status_id IN ({$status_ids})";
+    }
+    if (!empty($this->config['params']['membership_type_ids'])) {
+      $status_ids = implode(',', $this->config['params']['membership_type_ids']);
+      $membership_join .= " AND {$membership_alias}.membership_type_id IN ({$status_ids})";
+    }
+    $joins[] = $membership_join;
+
 
     // now find custom fields
     $custom_groups = $this->getCustomGroups();
