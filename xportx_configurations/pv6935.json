@@ -5,6 +5,17 @@
   },
   "modules": [
     {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "addressee_display",
+            "label": "Name1"
+          }
+        ]
+      }
+    },
+    {
       "class": "CRM_Xportx_Module_AddressHierarchy",
       "config": {
         "params": {
