@@ -54,7 +54,7 @@ class CRM_Xportx_Export {
     foreach ($config['modules'] as $module_spec) {
       $module = $this->getInstance($module_spec['class'], $module_spec['config']);
       if ($module) {
-        $module_entity = $module->forEntiy();
+        $module_entity = $module->forEntity();
         if (   $module_entity == 'Entity' // i.e. *any* entity
             || $module_entity == $this->entity) {
           // this is o.k., add it
@@ -77,7 +77,41 @@ class CRM_Xportx_Export {
       throw new Exception("XPortX: No exporter selected.");
     }
   }
-  
+
+  /**
+   * Get the alias of the base table,
+   *  in most cases this would be 'contact' referring to
+   *  the civicrm_contact table. You can be sure that
+   *  {base_alias].contact_id exists.
+   */
+  public function getBaseAlias() {
+    return strtolower($this->entity);
+  }
+
+  /**
+   * Get the base table of the query, i.e.
+   * the one that the provided IDs refer to
+   * In most cases this would be civicrm_contact
+   */
+  protected function getBaseTable() {
+    // this should work for now:
+    return 'civicrm_' . strtolower($this->entity);
+  }
+
+  /**
+   * Get the SQL expression to be used
+   *  to identify the contact ID
+   *
+   * @return string SQL expression
+   */
+  public function getContactIdExpression() {
+    if ($this->entity == 'Contact') {
+      return $this->getBaseAlias() . '.id';
+    } else {
+      return $this->getBaseAlias() . '.contact_id';
+    }
+  }
+
   /**
    * This function runs the generated SQL
    *
@@ -86,7 +120,7 @@ class CRM_Xportx_Export {
    * @return string a generated SQL query
    */
   public function generateSelectSQL($entity_ids) {
-    // collect
+    // collect SQL bits
     $selects = array();
     $joins   = array();
     $wheres  = array();
@@ -96,15 +130,19 @@ class CRM_Xportx_Export {
       $module->addWheres($wheres);
     }
 
+    // get some basic stuff
+    $base_alias = $this->getBaseAlias();
+    $base_table = $this->getBaseTable();
+
     // add the contact ID list
-    $contact_list = implode(',', $entity_ids);
-    $wheres[] = ("contact.id IN ({$contact_list})");
+    $entity_id_list = implode(',', $entity_ids);
+    $wheres[] = ("{$base_alias}.id IN ({$entity_id_list})");
 
     $sql = 'SELECT ' . implode(', ', $selects);
-    $sql .= ' FROM civicrm_contact contact ';
+    $sql .= " FROM {$base_table} {$base_alias} ";
     $sql .= implode(' ', $joins);
     $sql .= ' WHERE (' . implode(') AND (', $wheres) . ')';
-    $sql .= ' GROUP BY contact.id;';
+    $sql .= " GROUP BY {$base_alias}.id;";
     return $sql;
   }
 

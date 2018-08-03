@@ -21,6 +21,14 @@ use CRM_Xportx_ExtensionUtil as E;
 class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
 
   /**
+   * This module can do with any base_table
+   * (as long as it has a contact_id column)
+   */
+  public function forEntity() {
+    return 'Entity';
+  }
+
+  /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
    */
@@ -35,8 +43,9 @@ class CRM_Xportx_Module_ContactBase extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join contact table anyway
+    $contact_id = $this->getContactIdExpression();
     $contact_alias = $this->getAlias('contact');
-    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = contact.id";
+    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = {$contact_id}";
 
     // join prefix option group if needed
     foreach ($this->config['fields'] as $field_spec) {

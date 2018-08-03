@@ -88,6 +88,27 @@ abstract class CRM_Xportx_Module {
   }
 
   /**
+   * Get the alias of the base table,
+   *  in most cases this would be 'contact' referring to
+   *  the civicrm_contact table. You can be sure that
+   *  {base_alias].contact_id exists.
+   */
+  public function getBaseAlias() {
+    return $this->export->getBaseAlias();
+  }
+
+
+  /**
+   * Get the SQL expression to be used
+   *  to identify the contact ID
+   *
+   * @return string SQL expression
+   */
+  public function getContactIdExpression() {
+    return $this->export->getContactIdExpression();
+  }
+
+  /**
    * Get a uniqe alias for the given (internal) name
    * $name must be all lowercase chars: [a-z]+
    */
@@ -100,7 +121,7 @@ abstract class CRM_Xportx_Module {
    * Default is 'Contact'
    * Return 'Entity" for all entities with a contact_id field
    */
-  public function forEntiy() {
+  public function forEntity() {
     return 'Contact';
   }
 

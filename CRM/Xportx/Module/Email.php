@@ -21,6 +21,14 @@ use CRM_Xportx_ExtensionUtil as E;
 class CRM_Xportx_Module_Email extends CRM_Xportx_Module {
 
   /**
+   * This module can do with any base_table
+   * (as long as it has a contact_id column)
+   */
+  public function forEntity() {
+    return 'Entity';
+  }
+
+  /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
    */
@@ -35,8 +43,9 @@ class CRM_Xportx_Module_Email extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join contact table anyway
+    $contact_id = $this->getContactIdExpression();
     $email_alias = $this->getAlias('email');
-    $base_join = "LEFT JOIN civicrm_email {$email_alias} ON {$email_alias}.contact_id = contact.id";
+    $base_join = "LEFT JOIN civicrm_email {$email_alias} ON {$email_alias}.contact_id = {$contact_id}";
     if (!empty($this->config['params']['location_type_id'])) {
       $base_join .= " AND {$email_alias}.location_type_id = " . (int) $this->config['params']['location_type_id'];
     }

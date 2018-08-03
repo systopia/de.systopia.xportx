@@ -23,6 +23,14 @@ class CRM_Xportx_Module_AddressHierarchy extends CRM_Xportx_Module {
   protected $hierarchy = NULL;
 
   /**
+   * This module can do with any base_table
+   * (as long as it has a contact_id column)
+   */
+  public function forEntity() {
+    return 'Entity';
+  }
+
+  /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
    */
@@ -37,11 +45,12 @@ class CRM_Xportx_Module_AddressHierarchy extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join all items from the list
+    $contact_id = $this->getContactIdExpression();
     $hierarchy = $this->getHierarchy();
     $index = 0;
     foreach ($hierarchy as $location_type) {
       $address_alias = $this->getAlias("location{$index}");
-      $base_join = "LEFT JOIN civicrm_address {$address_alias} ON {$address_alias}.contact_id = contact.id";
+      $base_join = "LEFT JOIN civicrm_address {$address_alias} ON {$address_alias}.contact_id = {$contact_id}";
       if ($location_type == 'primary') {
         $base_join .= " AND {$address_alias}.is_primary = 1";
       } elseif ($location_type == 'billing') {

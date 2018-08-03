@@ -16,7 +16,10 @@
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
- * Provides contact base data
+ * Provides 'fancy names' for contacts, i.e.
+ * the names are calculated based on e.g. the contact_type
+ *
+ * @warning this is still an untested prototype
  */
 class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module {
 
@@ -43,6 +46,15 @@ class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module {
 //    },
 //
 //
+
+  /**
+   * This module can do with any base_table
+   * (as long as it has a contact_id column)
+   */
+  public function forEntity() {
+    return 'Entity';
+  }
+
   /**
    * Get this module's preferred alias.
    * Must be all lowercase chars: [a-z]+
@@ -58,10 +70,9 @@ class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join membership table (with parameters)
-
-
+    $contact_id = $this->getContactIdExpression();
     $membership_alias = $this->getAlias('membership');
-    $membership_join = "LEFT JOIN civicrm_membership {$membership_alias} ON {$membership_alias}.contact_id = contact.id";
+    $membership_join = "LEFT JOIN civicrm_membership {$membership_alias} ON {$membership_alias}.contact_id = {$contact_id}";
     if (!empty($this->config['params']['membership_status_ids'])) {
       $status_ids = implode(',', $this->config['params']['membership_status_ids']);
       $membership_join .= " AND {$membership_alias}.status_id IN ({$status_ids})";
