@@ -30,6 +30,11 @@ function xportx_civicrm_searchTasks($objectType, &$tasks) {
         'title' => E::ts('Export (Custom Presets)'),
         'class' => 'CRM_Xportx_Form_Task_Export',
         'result' => false);
+  } elseif ($objectType == 'event') {
+    $tasks[] = array(
+        'title' => E::ts('Export (Custom Presets)'),
+        'class' => 'CRM_Xportx_Form_Task_ParticipantExport',
+        'result' => false);
   }
 }
 

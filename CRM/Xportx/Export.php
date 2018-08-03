@@ -21,6 +21,7 @@ use CRM_Xportx_ExtensionUtil as E;
 class CRM_Xportx_Export {
 
   protected $configuration;
+  protected $entity;
   protected $modules;
   protected $exporter;
 
@@ -43,6 +44,7 @@ class CRM_Xportx_Export {
       throw new Exception("XPortX: Export configuration has no 'configuration' section.");
     }
     $this->configuration = $config['configuration'];
+    $this->entity = CRM_Utils_Array::value('entity', $config, 'Contact');
 
     // get modules
     if (!isset($config['modules']) || !is_array($config['modules'])) {
@@ -52,7 +54,14 @@ class CRM_Xportx_Export {
     foreach ($config['modules'] as $module_spec) {
       $module = $this->getInstance($module_spec['class'], $module_spec['config']);
       if ($module) {
-        $this->modules[] = $module;
+        $module_entity = $module->forEntiy();
+        if (   $module_entity == 'Entity' // i.e. *any* entity
+            || $module_entity == $this->entity) {
+          // this is o.k., add it
+          $this->modules[] = $module;
+        } else {
+          throw new Exception("XPortX: Incompatible! Module '{$module_spec['class']}' only processes [{$module_entity}], but this exporter is for [{$this->entity}]. Adjust your configuration!");
+        }
       }
     }
     if (empty($this->modules)) {
@@ -68,11 +77,15 @@ class CRM_Xportx_Export {
       throw new Exception("XPortX: No exporter selected.");
     }
   }
-
+  
   /**
    * This function runs the generated SQL
+   *
+   * @param $entity_ids array of entity IDs (most likely contact IDs)
+   *
+   * @return string a generated SQL query
    */
-  public function generateSelectSQL($contact_ids) {
+  public function generateSelectSQL($entity_ids) {
     // collect
     $selects = array();
     $joins   = array();
@@ -84,7 +97,7 @@ class CRM_Xportx_Export {
     }
 
     // add the contact ID list
-    $contact_list = implode(',', $contact_ids);
+    $contact_list = implode(',', $entity_ids);
     $wheres[] = ("contact.id IN ({$contact_list})");
 
     $sql = 'SELECT ' . implode(', ', $selects);
@@ -97,8 +110,10 @@ class CRM_Xportx_Export {
 
   /**
    * Run the export and write the result to the PHP out stream
+   *
+   * @param $entity_ids array of entity IDs (most likely contact IDs)
    */
-  public function writeToStream($contact_ids) {
+  public function writeToStream($entity_ids) {
     // WRITE HTML download header
     header('Content-Type: ' . $this->exporter->getMimeType());
     header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -113,8 +128,8 @@ class CRM_Xportx_Export {
     }
 
     // get the data
-    $sql = $this->generateSelectSQL($contact_ids);
-    //CRM_Core_ERROR::debug_log_message($sql);
+    $sql = $this->generateSelectSQL($entity_ids);
+    CRM_Core_ERROR::debug_log_message($sql);
     $data = CRM_Core_DAO::executeQuery($sql);
 
     // make the exporter write it to the stream
@@ -126,6 +141,8 @@ class CRM_Xportx_Export {
 
   /**
    * Get a module/exporter instance
+   *
+   * @return CRM_Xportx_Module module instance
    */
   protected function getInstance($class_name, $configuration) {
     if (class_exists($class_name)) {
@@ -191,5 +208,33 @@ class CRM_Xportx_Export {
    */
   public static function createByStoredConfig($config_name) {
     // TODO
+  }
+
+  /**
+   * get all currently stored export configurations
+   */
+  public static function getExportConfigurations($entity = 'Contact') {
+    // find all export configurations in folder 'xportx_configurations'
+    $configurations = array();
+
+    // TODO: scan *all* xportx_configurations folders
+    $folder = __DIR__ . '/../../xportx_configurations';
+    $files = scandir($folder);
+    foreach ($files as $file) {
+      if (preg_match("#[a-z0-9_]+[.]json#", $file)) {
+        // this is a json file
+        $content = file_get_contents($folder . DIRECTORY_SEPARATOR . $file);
+        $config = json_decode($content, TRUE);
+        if ($config) {
+          // check if the entity match:
+          $exporter_entity = CRM_Utils_Array::value('entity', $config, 'Contact');
+          if ($exporter_entity == $entity) {
+            $configurations[$file] = $config;
+          }
+        }
+      }
+    }
+
+    return $configurations;
   }
 }

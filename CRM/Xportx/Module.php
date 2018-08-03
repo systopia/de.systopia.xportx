@@ -95,6 +95,14 @@ abstract class CRM_Xportx_Module {
     return $this->getAlias('val_');
   }
 
+  /**
+   * Get the entity this module can deal with
+   * Default is 'Contact'
+   * Return 'Entity" for all entities with a contact_id field
+   */
+  public function forEntiy() {
+    return 'Contact';
+  }
 
 
   /**

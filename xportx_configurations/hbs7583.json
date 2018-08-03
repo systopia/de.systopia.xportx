@@ -1,0 +1,45 @@
+{
+  "title": "Externer Briefversand",
+  "entity": "Participant",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "last_name",
+            "label": "Nachname"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_CSV",
+    "config": {
+      "file_name": "Briefversand-{date}.csv",
+      "encoding": "UTF-8",
+      "delimiter": ","
+    }
+  }
+}
