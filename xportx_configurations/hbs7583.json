@@ -28,7 +28,7 @@
         "fields": [
           {
             "key": "email",
-            "label": "E-Mail"
+            "label": "EMail"
           }
         ]
       }
@@ -45,14 +45,31 @@
           }
         ]
       }
+    },
+    {
+      "class": "CRM_Xportx_Module_Event",
+      "config": {
+        "params": {
+        },
+        "fields": [
+          {
+            "key": "title",
+            "label": "Veranstaltungstitel"
+          },
+          {
+            "key": "start_date",
+            "label": "Datum"
+          }
+        ]
+      }
     }
   ],
   "exporter": {
-    "class": "CRM_Xportx_Exporter_CSV",
+    "class": "CRM_Xportx_Exporter_PDF",
     "config": {
-      "file_name": "Teilnehmerliste.csv",
-      "encoding": "UTF-8",
-      "delimiter": ","
+      "file_name": "Teilnehmerliste.pdf",
+      "smarty_template": "hbs7583.tpl",
+      "format_id": "1"
     }
   }
 }

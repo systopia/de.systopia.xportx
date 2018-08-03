@@ -16,11 +16,11 @@
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
- * Provides Participant data
+ * Provides Event data
  *
  * This exporter is only available for participant exports
  */
-class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
+class CRM_Xportx_Module_Event extends CRM_Xportx_Module {
 
   /**
    * This module can do with any base_table
@@ -35,7 +35,7 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
    * Must be all lowercase chars: [a-z]+
    */
   public function getPreferredAlias() {
-    return 'participant';
+    return 'event';
   }
 
   /**
@@ -45,21 +45,9 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
    */
   public function addJoins(&$joins) {
     // join participant table (strictly speaking not necessary, but we'll do anyway for compatibility)
-    $participant_alias = $this->getAlias('participant');
+    $event_alias = $this->getAlias('event');
     $base_alias = $this->getBaseAlias(); // this should be an alias of the civicrm_participant table
-    $joins[] = "LEFT JOIN civicrm_participant {$participant_alias} ON {$participant_alias}.id = {$base_alias}.id";
-
-    // join participant_roles?
-    foreach ($this->config['fields'] as $field_spec) {
-      if ($field_spec['key'] == 'role') {
-        // join roles table
-        $role_alias = $this->getAlias('participant_role');
-        $joins[] = $this->generateOptionValueJoin('participant_role', "{$participant_alias}.role_id", $role_alias);
-        break;
-      }
-    }
-
-    // more joins?
+    $joins[] = "LEFT JOIN civicrm_event {$event_alias} ON {$event_alias}.id = {$base_alias}.event_id";
   }
 
   /**
@@ -68,20 +56,15 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
    * "contact" or this module's joins
    */
   public function addSelects(&$selects) {
-    $participant_alias = $this->getAlias('participant');
+    $event_alias = $this->getAlias('event');
     $value_prefix  = $this->getValuePrefix();
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
-        case 'role':
-          $role_alias = $this->getAlias('participant_role');
-          $selects[] = "{$role_alias}.label AS {$value_prefix}{$field_name}";
-          break;
-
         default:
           // the default ist a column from the contact table
-          $selects[] = "{$participant_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+          $selects[] = "{$event_alias}.{$field_name} AS {$value_prefix}{$field_name}";
           break;
       }
     }

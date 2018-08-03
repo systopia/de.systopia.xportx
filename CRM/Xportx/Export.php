@@ -249,25 +249,59 @@ class CRM_Xportx_Export {
   }
 
   /**
+   * Get the list of absolute paths where resources can be found
+   *
+   * @return array absolute folder paths
+   */
+  public static function getXportxLocations() {
+    $locations = array();
+    // TODO: find all other paths
+
+    // add the folder in this extension
+    $locations[] = __DIR__ . '/../../xportx_configurations';
+
+    return $locations;
+  }
+
+  /**
+   * Find an XPortX resource in the known locations
+   *
+   * @param $path string relative path or file name
+   * @return string absolute path to the resource
+   */
+  public static function getXportxResource($path) {
+    $locations = self::getXportxLocations();
+    foreach ($locations as $location) {
+      $file_path = $location . DIRECTORY_SEPARATOR . $path;
+      if (file_exists($file_path)) {
+        return $file_path;
+      }
+    }
+
+    return NULL;
+  }
+
+  /**
    * get all currently stored export configurations
    */
   public static function getExportConfigurations($entity = 'Contact') {
     // find all export configurations in folder 'xportx_configurations'
     $configurations = array();
 
-    // TODO: scan *all* xportx_configurations folders
-    $folder = __DIR__ . '/../../xportx_configurations';
-    $files = scandir($folder);
-    foreach ($files as $file) {
-      if (preg_match("#[a-z0-9_]+[.]json#", $file)) {
-        // this is a json file
-        $content = file_get_contents($folder . DIRECTORY_SEPARATOR . $file);
-        $config = json_decode($content, TRUE);
-        if ($config) {
-          // check if the entity match:
-          $exporter_entity = CRM_Utils_Array::value('entity', $config, 'Contact');
-          if ($exporter_entity == $entity) {
-            $configurations[$file] = $config;
+    $locations = self::getXportxLocations();
+    foreach ($locations as $folder) {
+      $files = scandir($folder);
+      foreach ($files as $file) {
+        if (preg_match("#[a-z0-9_]+[.]json#", $file)) {
+          // this is a json file
+          $content = file_get_contents($folder . DIRECTORY_SEPARATOR . $file);
+          $config = json_decode($content, TRUE);
+          if ($config) {
+            // check if the entity match:
+            $exporter_entity = CRM_Utils_Array::value('entity', $config, 'Contact');
+            if ($exporter_entity == $entity) {
+              $configurations[$file] = $config;
+            }
           }
         }
       }
