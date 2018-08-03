@@ -42,6 +42,14 @@
           {
             "key": "role",
             "label": "Rolle"
+          },
+          {
+            "key": "custom_registration_address__organisation_name_1",
+            "label": "Organisation1"
+          },
+          {
+            "key": "custom_registration_address__organisation_name_2",
+            "label": "Organisation2"
           }
         ]
       }

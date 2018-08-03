@@ -56,16 +56,8 @@ class CRM_Xportx_Module_Membership extends CRM_Xportx_Module {
     }
     $joins[] = $membership_join;
 
-
-    // now find custom fields
-    $custom_groups = $this->getCustomGroups();
-
-    // now join the groups
-    foreach (array_keys($custom_groups) as $group_name) {
-      $group_alias = $this->getAlias("custom_{$group_name}");
-      $table_name  = civicrm_api3('CustomGroup', 'getvalue', array('name' => $group_name, 'return' => 'table_name'));
-      $joins[] = "LEFT JOIN {$table_name} {$group_alias} ON {$group_alias}.entity_id = {$membership_alias}.id";
-    }
+    // now add custom group joins (if any)
+    $this->addCustomFieldJoins($joins, $membership_alias);
   }
 
   /**
@@ -80,13 +72,11 @@ class CRM_Xportx_Module_Membership extends CRM_Xportx_Module {
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
-      if (preg_match('/^custom_(?P<group_name>\w+)__(?P<field_name>\w+)$/', $field_name, $match)) {
-        // this is a custom field
-        $cfield_name = $match['field_name'];
-        $cgroup_name = $match['group_name'];
-        $group_alias = $this->getAlias("custom_{$cgroup_name}");
-        $cfield_column = civicrm_api3('CustomField', 'getvalue', array('name' => $cfield_name, 'return' => 'column_name'));
-        $selects[] = "{$group_alias}.{$cfield_column} AS {$value_prefix}{$field_name}";
+
+      // check if this is a custom field
+      if ($this->isCustomField($field_name)) {
+        // this is a custom field, use default code
+        $this->addCustomFieldSelect($selects, $field_name);
       } else {
         // this is a base field
         switch ($field_name) {
@@ -103,22 +93,5 @@ class CRM_Xportx_Module_Membership extends CRM_Xportx_Module {
         }
       }
     }
-  }
-
-  /**
-   * Get a structure of custom_group_name => [custom_field_names]
-   * of all the custom fields in use
-   *
-   * @return array custom_group_name => [custom_field_names]
-   */
-  protected function getCustomGroups() {
-    $custom_groups = array();
-    foreach ($this->config['fields'] as $field_spec) {
-      if (preg_match('/^custom_(?P<group_name>\w+)__(?P<field_name>\w+)$/', $field_spec['key'], $match)) {
-        // this is a custom field
-        $custom_groups[$match['group_name']][] = $match['field_name'];
-      }
-    }
-    return $custom_groups;
   }
 }

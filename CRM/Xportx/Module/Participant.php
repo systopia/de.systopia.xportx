@@ -60,6 +60,9 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
     }
 
     // more joins?
+
+    // now add custom group joins (if any)
+    $this->addCustomFieldJoins($joins, $participant_alias);
   }
 
   /**
@@ -73,16 +76,20 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
-      switch ($field_name) {
-        case 'role':
-          $role_alias = $this->getAlias('participant_role');
-          $selects[] = "{$role_alias}.label AS {$value_prefix}{$field_name}";
-          break;
+      if ($this->isCustomField($field_name)) {
+        $this->addCustomFieldSelect($selects, $field_name);
+      } else {
+        switch ($field_name) {
+          case 'role':
+            $role_alias = $this->getAlias('participant_role');
+            $selects[] = "{$role_alias}.label AS {$value_prefix}{$field_name}";
+            break;
 
-        default:
-          // the default ist a column from the contact table
-          $selects[] = "{$participant_alias}.{$field_name} AS {$value_prefix}{$field_name}";
-          break;
+          default:
+            // the default ist a column from the contact table
+            $selects[] = "{$participant_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+            break;
+        }
       }
     }
   }

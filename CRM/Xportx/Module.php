@@ -164,4 +164,89 @@ abstract class CRM_Xportx_Module {
     }
     return "LEFT JOIN civicrm_option_value {$alias} ON {$alias}.value = {$option_value_source} AND option_group_id = {$group_id}";
   }
+
+  /********************************************************
+   *                 CUSTOM FIELD SUPPORT                 *
+   *******************************************************/
+
+  /**
+   * Check if the given field specification is a custom field
+   *
+   * @param $field_spec
+   *
+   * @return array if this is a custom field, FALSE if not
+   */
+  protected function isCustomField($field_name) {
+    if (preg_match('/^custom_(?P<group_name>\w+)__(?P<field_name>\w+)$/', $field_name, $match)) {
+      return $match;
+    } else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Get a structure of custom_group_name => [custom_field_names]
+   * of all the custom fields in use
+   *
+   * Format is: key: custom_<group_name>__<field_name>
+   *
+   * @return array custom_group_name => [custom_field_names]
+   */
+  protected function getCustomGroups() {
+    $custom_groups = array();
+    foreach ($this->config['fields'] as $field_spec) {
+      $match = $this->isCustomField($field_spec['key']);
+      if ($match) {
+        // this is a custom field
+        $custom_groups[$match['group_name']][] = $match['field_name'];
+      }
+    }
+    return $custom_groups;
+  }
+
+  /**
+   * Add the necessary joins for the custom fields
+   *
+   * @param $joins
+   */
+  protected function addCustomFieldJoins(&$joins, $entity_alias) {
+    // get the custom groups used in the specs
+    $custom_groups = $this->getCustomGroups();
+
+    // now join the groups
+    foreach (array_keys($custom_groups) as $group_name) {
+      $group_alias = $this->getAlias("custom_{$group_name}");
+      // TODO: caching?
+      $table_name  = civicrm_api3('CustomGroup', 'getvalue', array(
+          'name'   => $group_name,
+          'return' => 'table_name'));
+
+      $joins[] = "LEFT JOIN {$table_name} {$group_alias} ON {$group_alias}.entity_id = {$entity_alias}.id";
+    }
+  }
+
+  /**
+   * Add the necessary selcts for the custom fields
+   *
+   * @param $selects
+   *
+   * @return array if this is
+   */
+  protected function addCustomFieldSelect(&$selects, $field_name) {
+    $match = $this->isCustomField($field_name);
+    if ($match) {
+      // this is a custom field
+      $value_prefix = $this->getValuePrefix();
+      $cfield_name = $match['field_name'];
+      $cgroup_name = $match['group_name'];
+      $group_alias = $this->getAlias("custom_{$cgroup_name}");
+      // TODO: cache?
+      $cfield_column = civicrm_api3('CustomField', 'getvalue', array(
+          'name'            => $cfield_name,
+          'custom_group_id' => $cgroup_name,
+          'return'          => 'column_name'));
+
+      $selects[] = "{$group_alias}.{$cfield_column} AS {$value_prefix}{$field_name}";
+    }
+  }
 }

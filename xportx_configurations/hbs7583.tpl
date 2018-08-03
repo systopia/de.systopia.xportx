@@ -19,7 +19,7 @@
             <tr>
                 <td>{$record.Nachname}</td>
                 <td>{$record.Vorname}</td>
-                <td>TODO</td>
+                <td>{$record.Organisation1} {$record.Organisation2}</td>
                 <td>{$record.EMail}</td>
                 <td></td>
             </tr>
