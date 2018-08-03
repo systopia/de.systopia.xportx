@@ -1,5 +1,5 @@
 {
-  "title": "Externer Briefversand",
+  "title": "Teilnehmerliste (PDF)",
   "entity": "Participant",
   "configuration": {
   },
@@ -32,12 +32,25 @@
           }
         ]
       }
+    },
+    {
+      "class": "CRM_Xportx_Module_Participant",
+      "config": {
+        "params": {
+        },
+        "fields": [
+          {
+            "key": "role",
+            "label": "Rolle"
+          }
+        ]
+      }
     }
   ],
   "exporter": {
     "class": "CRM_Xportx_Exporter_CSV",
     "config": {
-      "file_name": "Briefversand-{date}.csv",
+      "file_name": "Teilnehmerliste.csv",
       "encoding": "UTF-8",
       "delimiter": ","
     }
