@@ -121,13 +121,15 @@ class CRM_Xportx_Export {
    */
   public function generateSelectSQL($entity_ids) {
     // collect SQL bits
-    $selects = array();
-    $joins   = array();
-    $wheres  = array();
+    $selects   = array();
+    $joins     = array();
+    $wheres    = array();
+    $order_bys = array();
     foreach ($this->modules as $module) {
       $module->addJoins($joins);
       $module->addSelects($selects);
       $module->addWheres($wheres);
+      $module->addOrderBys($order_bys);
     }
 
     // get some basic stuff
@@ -142,8 +144,11 @@ class CRM_Xportx_Export {
     $sql .= " FROM {$base_table} {$base_alias} ";
     $sql .= implode(' ', $joins);
     $sql .= ' WHERE (' . implode(') AND (', $wheres) . ')';
-    $sql .= " GROUP BY {$base_alias}.id;";
-    return $sql;
+    $sql .= " GROUP BY {$base_alias}.id";
+    if (!empty($order_bys)) {
+      $sql .= ' ORDER BY ' . implode(', ', $order_bys);
+    }
+    return $sql . ';';
   }
 
   /**

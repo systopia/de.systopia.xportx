@@ -72,6 +72,19 @@ abstract class CRM_Xportx_Module {
   }
 
   /**
+   * add this module's order by statements
+   * by default, they're taken from the configuration field 'order_by'
+   */
+  public function addOrderBys(&$order_bys) {
+    if (!empty($this->config['order_by']) && is_array($this->config['order_by'])) {
+      foreach ($this->config['order_by'] as $order_by_spec) {
+        $alias = $this->getAlias($order_by_spec['alias']);
+        $order_bys[] = "{$alias}.{$order_by_spec['field']} {$order_by_spec['sort']}";
+      }
+    }
+  }
+
+  /**
    * Get a numeric of this instance
    * (within its export context)
    */
