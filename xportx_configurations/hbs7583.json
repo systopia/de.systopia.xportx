@@ -77,7 +77,7 @@
     "config": {
       "file_name": "Teilnehmerliste.pdf",
       "smarty_template": "hbs7583.tpl",
-      "format_id": "1"
+      "format_id": "1087"
     }
   }
 }
