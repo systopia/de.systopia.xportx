@@ -260,6 +260,10 @@ class CRM_Xportx_Export {
     // add the folder in this extension
     $locations[] = __DIR__ . '/../../xportx_configurations';
 
+    // add xportx_configurations in upload dir
+    $config = CRM_Core_Config::singleton();
+    $locations[] = $config->uploadDir .'xportx_configurations';
+
     return $locations;
   }
 
