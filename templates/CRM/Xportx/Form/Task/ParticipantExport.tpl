@@ -1,6 +1,6 @@
 {*-------------------------------------------------------+
-| SYSTOPIA bPK Extension                                 |
-| Copyright (C) 2018 SYSTOPIA                            |
+| SYSTOPIA XPortX Extension                              |
+| Copyright (C) 2017-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
