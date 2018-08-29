@@ -266,8 +266,10 @@ class CRM_Xportx_Export {
     $locations[] = __DIR__ . '/../../xportx_configurations';
 
     // add xportx_configurations in upload dir
-    $config = CRM_Core_Config::singleton();
-    $locations[] = $config->uploadDir .'xportx_configurations';
+    $persist_location = Civi::paths()->getPath('[civicrm.files]/persist/xportx_configurations');
+    if (file_exists($persist_location) && is_dir($persist_location)) {
+      $locations[] = $persist_location;
+    }
 
     return $locations;
   }
