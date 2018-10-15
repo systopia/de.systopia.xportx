@@ -15,16 +15,28 @@
 
 use CRM_Xportx_ExtensionUtil as E;
 
+include_once 'vendor/autoload.php';
+
+
 /**
- * Base class for all exporters
+ * XLSX Exporter
+ *
+ * You need to run the composer for this to work.
+ *
+ * config options:
+ *  sheet_name    name of the xls sheet
+ *  column_types  mapping column_label => type (e.g. 'string', 'integer', see link below)
+ *  file_name     preferred file name
+ *
+ * @see https://github.com/mk-j/PHP_XLSXWriter
  */
-class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
+class CRM_Xportx_Exporter_XLSXWriter extends CRM_Xportx_Exporter {
 
   /**
    * get the mime type created by this exporter
    */
   public function getMimeType() {
-    return 'text/csv';
+    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   }
 
   /**
@@ -32,7 +44,7 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
    */
   public function getFileName() {
     if (empty($this->config['file_name'])) {
-      return 'export.csv';
+      return 'export.xlsx';
     }
 
     // use file name
@@ -48,17 +60,20 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
    * Write the data DAO to the given file
    */
   public function writeToFile($data, $file_name) {
-    $handle = fopen($file_name, 'w');
-    $delimiter = $this->getDelimiter();
+    $writer = new XLSXWriter();
 
     // compile header + write
+    $sheet_name = CRM_Utils_Array::value('sheet_name', $this->config, 'Sheet1');
     $fields = $this->export->getFieldList();
     $headers = array();
     foreach ($fields as $field) {
-      $headers[] = $field['label'];
+      $field_type = 'string';
+      if (!empty($this->config['column_types'][$field['label']])) {
+        $field_type = $this->config['column_types'][$field['label']];
+      }
+      $headers[$field['label']] = $field_type;
     }
-    $this->encodeRow($headers);
-    fputcsv($handle, $headers, $delimiter);
+    $writer->writeSheetHeader($sheet_name, $headers);
 
     // now run through the fields
     while ($data->fetch()) {
@@ -66,31 +81,15 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
       foreach ($fields as $field) {
         $row[] = $this->export->getFieldValue($data, $field);
       }
-      $this->encodeRow($row);
-      fputcsv($handle, $row, $delimiter);
+      $writer->writeSheetRow($sheet_name, $row);
     }
-  }
 
-  /**
-   * encode values
-   */
-  protected function encodeRow(&$row) {
-    if (!empty($this->config['encoding'])) {
-      $encoding = $this->config['encoding'];
-      foreach ($row as &$value) {
-        $value = mb_convert_encoding($value, $encoding);
-      }
-    }
-  }
+    // write to temporary file
+    $tmpfile = tempnam(sys_get_temp_dir(), 'xportx_xlsx_');
+    $writer->writeToFile($tmpfile);
 
-  /**
-   * get the delimiter
-   */
-  protected function getDelimiter() {
-    if (empty($this->config['delimiter'])) {
-      return ',';
-    } else {
-      return $this->config['delimiter'];
-    }
+    // copy to final file
+    $raw_data = file_get_contents($tmpfile);
+    file_put_contents($file_name, $raw_data);
   }
 }
