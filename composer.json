@@ -1,0 +1,6 @@
+{
+  "require": {
+    "mk-j/PHP_XLSXWriter": "^0.37",
+    "ext-zip": "*"
+  }
+}
