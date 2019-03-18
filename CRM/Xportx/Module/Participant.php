@@ -55,7 +55,11 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
         // join roles table
         $role_alias = $this->getAlias('participant_role');
         $joins[] = $this->generateOptionValueJoin('participant_role', "{$participant_alias}.role_id", $role_alias);
-        break;
+
+      } elseif ($field_spec['key'] == 'status') {
+        // join status entity
+        $status_alias = $this->getAlias('participant_status');
+        $joins[] = "LEFT JOIN civicrm_participant_status_type {$status_alias} ON {$status_alias}.id = {$participant_alias}.status_id";
       }
     }
 
@@ -83,6 +87,11 @@ class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
           case 'role':
             $role_alias = $this->getAlias('participant_role');
             $selects[] = "{$role_alias}.label AS {$value_prefix}{$field_name}";
+            break;
+
+          case 'status':
+            $status_alias = $this->getAlias('participant_status');
+            $selects[] = "{$status_alias}.label AS {$value_prefix}{$field_name}";
             break;
 
           default:

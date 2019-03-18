@@ -94,17 +94,17 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
-        // process exeptions...
+        // process exceptions...
         case 'display_name':
-          $selects[] = "IF(contact.contact_type = 'Organization', contact.display_name, {$contact_alias}.{$field_name}) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$contact_alias}.display_name, {$contact_alias}.{$field_name}) AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_1':
-          $selects[] = "IF(contact.contact_type = 'Organization', {$selforg_alias}.row_1, {$orgname_alias}.row_1) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$selforg_alias}.row_1, {$orgname_alias}.row_1) AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_2':
-          $selects[] = "IF(contact.contact_type = 'Organization', {$selforg_alias}.row_2, {$orgname_alias}.row_2) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$selforg_alias}.row_2, {$orgname_alias}.row_2) AS {$value_prefix}{$field_name}";
           break;
 
         default:
