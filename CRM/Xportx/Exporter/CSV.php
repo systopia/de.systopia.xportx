@@ -64,7 +64,7 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
     while ($data->fetch()) {
       $row = array();
       foreach ($fields as $field) {
-        $row[] = $this->export->getFieldValue($data, $field);
+        $row[] = $this->getFieldValue($data, $field);
       }
       $this->encodeRow($row);
       fputcsv($handle, $row, $delimiter);
