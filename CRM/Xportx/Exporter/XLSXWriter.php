@@ -79,7 +79,7 @@ class CRM_Xportx_Exporter_XLSXWriter extends CRM_Xportx_Exporter {
     while ($data->fetch()) {
       $row = array();
       foreach ($fields as $field) {
-        $row[] = $this->export->getFieldValue($data, $field);
+        $row[] = $this->getFieldValue($data, $field);
       }
       $writer->writeSheetRow($sheet_name, $row);
     }
