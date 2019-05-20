@@ -59,9 +59,9 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
     $master_alias = $this->getAlias('master');
     $joins[] = "LEFT JOIN civicrm_address {$master_alias} ON {$master_alias}.id = {$address_alias}.master_id";
 
-    // then join the contact
-    $contact_alias = $this->getAlias('contact');
-    $joins[] = "LEFT JOIN civicrm_contact {$contact_alias} ON {$contact_alias}.id = {$master_alias}.contact_id";
+    // then join the master contact
+    $master_contact_alias = $this->getAlias('master_contact');
+    $joins[] = "LEFT JOIN civicrm_contact {$master_contact_alias} ON {$master_contact_alias}.id = {$master_alias}.contact_id";
 
     // custom code for HBS:
     foreach ($this->config['fields'] as $field) {
@@ -69,11 +69,7 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
         // finally join the civicrm_value_organisation_name table:
         //  once for the address master:
         $orgname_alias = $this->getAlias('masterorg');
-        $joins[] = "LEFT JOIN civicrm_value_organisation_name {$orgname_alias} ON {$orgname_alias}.entity_id = {$contact_alias}.id";
-
-        // once for the organisation itself
-        $selforg_alias = $this->getAlias('selforg');
-        $joins[] = "LEFT JOIN civicrm_value_organisation_name {$selforg_alias} ON {$selforg_alias}.entity_id = {$contact_id}";
+        $joins[] = "LEFT JOIN civicrm_value_organisation_name {$orgname_alias} ON {$orgname_alias}.entity_id = {$master_contact_alias}.id";
 
         break;
       }
@@ -86,25 +82,23 @@ class CRM_Xportx_Module_AddressOrganisation extends CRM_Xportx_Module {
    * "contact" or this module's joins
    */
   public function addSelects(&$selects) {
-    $contact_alias = $this->getAlias('contact');
+    $master_contact_alias = $this->getAlias('master_contact');
     $orgname_alias = $this->getAlias('masterorg');
-    $selforg_alias = $this->getAlias('selforg');
     $value_prefix  = $this->getValuePrefix();
 
     foreach ($this->config['fields'] as $field_spec) {
       $field_name = $field_spec['key'];
       switch ($field_name) {
-        // process exceptions...
         case 'display_name':
-          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$contact_alias}.display_name, {$contact_alias}.{$field_name}) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$master_contact_alias}.contact_type = 'Organization', {$master_contact_alias}.display_name, '') AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_1':
-          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$selforg_alias}.row_1, {$orgname_alias}.row_1) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$master_contact_alias}.contact_type = 'Organization', {$orgname_alias}.row_1, '') AS {$value_prefix}{$field_name}";
           break;
 
         case 'organisation_name_2':
-          $selects[] = "IF({$contact_alias}.contact_type = 'Organization', {$selforg_alias}.row_2, {$orgname_alias}.row_2) AS {$value_prefix}{$field_name}";
+          $selects[] = "IF({$master_contact_alias}.contact_type = 'Organization', {$orgname_alias}.row_2, '') AS {$value_prefix}{$field_name}";
           break;
 
         default:
