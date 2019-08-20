@@ -255,9 +255,9 @@ class CRM_Xportx_Module_LocationType extends CRM_Xportx_Module {
       static $location_type_names = NULL;
       if ($location_type_names === NULL) {
         $location_type_names = [];
-        $query = civicrm_api3('LocationType', 'get', ['option.limit' => 0, 'return' => 'id,name']);
+        $query = civicrm_api3('LocationType', 'get', ['option.limit' => 0, 'return' => 'id,name,display_name']);
         foreach ($query['values'] as $location_type) {
-          $location_type_names[$location_type['id']] = $location_type['name'];
+          $location_type_names[$location_type['id']] = $location_type['display_name'];
         }
       }
       return CRM_Utils_Array::value($location_type_id, $location_type_names, NULL);
