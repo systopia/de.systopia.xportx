@@ -85,19 +85,19 @@ class CRM_Xportx_Module_LocationType extends CRM_Xportx_Module {
 
     // add the main entity table
     $main_alias = $this->getAlias('location_entity');
-    $selects[] = "{$main_alias}.id AS {$value_prefix}location_type";
+    $selects[] = "{$main_alias}.location_type_id AS {$value_prefix}location_type";
 
     // add selects for parent/child objects
     $include_parent_levels = (int) CRM_Utils_Array::value('include_parent_levels', $this->config['params'], 0);
     for ($i = 1; $i <= $include_parent_levels; $i++) {
       $level_alias = $this->getAlias("parent{$i}");
-      $selects[] = "GROUP_CONCAT({$level_alias}.id) AS {$value_prefix}location_type_parent{$i}";
+      $selects[] = "GROUP_CONCAT({$level_alias}.location_type_id) AS {$value_prefix}location_type_parent{$i}";
     }
 
     $include_child_levels  = (int) CRM_Utils_Array::value('include_child_levels',  $this->config['params'], 0);
     for ($i = 1; $i <= $include_child_levels; $i++) {
       $level_alias = $this->getAlias("child{$i}");
-      $selects[] = "GROUP_CONCAT({$level_alias}.id) AS {$value_prefix}location_type_child{$i}";
+      $selects[] = "GROUP_CONCAT({$level_alias}.location_type_id) AS {$value_prefix}location_type_child{$i}";
     }
   }
 
