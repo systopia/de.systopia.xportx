@@ -59,6 +59,11 @@ class CRM_Xportx_Module_CustomGroup extends CRM_Xportx_Module {
       $field_names[] = $field_spec['key'];
     }
 
+    // avoid DB error
+    if (empty($field_names)) {
+      return [];
+    }
+
     // load all fields
     $field_data = civicrm_api3('CustomField', 'get', array(
       'custom_group_id' => $custom_group['id'],
