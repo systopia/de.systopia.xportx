@@ -17,6 +17,22 @@ require_once 'xportx.civix.php';
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
+ * Add links to groups
+ */
+function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
+  Civi::log()->debug("$op, $objectName, $objectId");
+  if ($objectName == 'Group' && $op == 'group.selector.row') {
+    // add rebook link
+    $links[] = [
+        'name'  => E::ts('Export'),
+        'title' => E::ts('Export (Custom Presets)'),
+        'url'   => 'civicrm/xportx/group',
+        'qs'    => "group_id={$objectId}",
+    ];
+  }
+}
+
+/**
  * Add contact search tasks to submit tax excemption XMLs
  *
  * @param string $objectType specifies the component
