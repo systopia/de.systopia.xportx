@@ -23,6 +23,8 @@ class CRM_Xportx_Export {
   protected $configuration;
   protected $entity;
   protected $modules;
+
+  /** @var CRM_Xportx_Exporter @ */
   protected $exporter;
 
   /**
@@ -79,13 +81,23 @@ class CRM_Xportx_Export {
   }
 
   /**
+   * Convert CamelCase to snake_case
+   * @see https://stackoverflow.com/questions/1993721/how-to-convert-pascalcase-to-pascal-case
+   * @param $string CamelCase string
+   * @return string snake case string
+   */
+  protected function snakeCase($string) {
+    return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', $string));
+  }
+
+  /**
    * Get the alias of the base table,
    *  in most cases this would be 'contact' referring to
    *  the civicrm_contact table. You can be sure that
    *  {base_alias].contact_id exists.
    */
   public function getBaseAlias() {
-    return strtolower($this->entity);
+    return $this->snakeCase($this->entity);
   }
 
   /**
@@ -95,7 +107,43 @@ class CRM_Xportx_Export {
    */
   protected function getBaseTable() {
     // this should work for now:
-    return 'civicrm_' . strtolower($this->entity);
+    return 'civicrm_' . $this->snakeCase($this->entity);
+  }
+
+  /**
+   * Add the where clause for the main entity
+   *
+   * @param $wheres     array list of where clauses
+   * @param $entity_ids array list of IDs
+   */
+  protected function addEntityWhere(&$wheres, $entity_ids) {
+    $entity_id_list = implode(',', $entity_ids);
+    $base_alias = $this->getBaseAlias();
+
+    switch ($this->entity) {
+      case 'GroupContact':
+        $wheres[] = ("{$base_alias}.group_id IN ({$entity_id_list}) AND {$base_alias}.status = 'Added'");
+        break;
+
+      default:
+        $wheres[] = ("{$base_alias}.id IN ({$entity_id_list})");
+    }
+  }
+
+  /**
+   * Add the group by clause for the main entity
+   * @return string group by statement
+   */
+  protected function getEntityGroupBy() {
+    $base_alias = $this->getBaseAlias();
+
+    switch ($this->entity) {
+      case 'GroupContact':
+        return " GROUP BY {$base_alias}.contact_id";
+
+      default:
+        return " GROUP BY {$base_alias}.id";
+    }
   }
 
   /**
@@ -105,10 +153,12 @@ class CRM_Xportx_Export {
    * @return string SQL expression
    */
   public function getContactIdExpression() {
-    if ($this->entity == 'Contact') {
-      return $this->getBaseAlias() . '.id';
-    } else {
-      return $this->getBaseAlias() . '.contact_id';
+    switch ($this->entity) {
+      case 'Contact':
+        return $this->getBaseAlias() . '.id';
+
+      default:
+        return $this->getBaseAlias() . '.contact_id';
     }
   }
 
@@ -137,14 +187,13 @@ class CRM_Xportx_Export {
     $base_table = $this->getBaseTable();
 
     // add the contact ID list
-    $entity_id_list = implode(',', $entity_ids);
-    $wheres[] = ("{$base_alias}.id IN ({$entity_id_list})");
+    $this->addEntityWhere($wheres, $entity_ids);
 
     $sql = 'SELECT ' . implode(', ', $selects);
     $sql .= " FROM {$base_table} {$base_alias} ";
     $sql .= implode(' ', $joins);
     $sql .= ' WHERE (' . implode(') AND (', $wheres) . ')';
-    $sql .= " GROUP BY {$base_alias}.id";
+    $sql .= $this->getEntityGroupBy();
     if (!empty($order_bys)) {
       $sql .= ' ORDER BY ' . implode(', ', $order_bys);
     }
@@ -185,10 +234,11 @@ class CRM_Xportx_Export {
   /**
    * Get a module/exporter instance
    *
-   * @return CRM_Xportx_Module module instance
+   * @return CRM_Xportx_Module|CRM_Xportx_Exporter module instance
    */
   protected function getInstance($class_name, $configuration) {
     if (class_exists($class_name)) {
+      /** @var $instance CRM_Xportx_Module|CRM_Xportx_Exporter */
       $instance = new $class_name();
       $instance->init($configuration, $this);
       return $instance;
