@@ -15,8 +15,6 @@
 
 use CRM_Xportx_ExtensionUtil as E;
 
-include_once 'vendor/autoload.php';
-
 
 /**
  * XLSX Exporter
@@ -60,7 +58,8 @@ class CRM_Xportx_Exporter_XLSXWriter extends CRM_Xportx_Exporter {
    * Write the data DAO to the given file
    */
   public function writeToFile($data, $file_name) {
-    $writer = new XLSXWriter();
+    require_once(E::path('vendor/autoload.php'));
+    $writer = new \XLSXWriter();
 
     // compile header + write
     $sheet_name = CRM_Utils_Array::value('sheet_name', $this->config, 'Sheet1');
