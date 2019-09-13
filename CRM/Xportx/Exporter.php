@@ -99,6 +99,8 @@ abstract class CRM_Xportx_Exporter {
     if (!empty($field['tmp_store'])) {
       $this->setTempValue($field['tmp_store'], $value);
     }
+
+    return $value;
   }
 
   /**

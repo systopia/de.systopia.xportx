@@ -54,14 +54,23 @@ class CRM_Xportx_Module_Address extends CRM_Xportx_Module {
     }
     $joins[] = $base_join;
 
-    // join country if needed
     foreach ($this->config['fields'] as $field_spec) {
+      // join country if needed
       if ($field_spec['key'] == 'country') {
         $prefix_alias = $this->getAlias('country');
         $joins[] = "LEFT JOIN civicrm_country {$prefix_alias} ON {$prefix_alias}.id = {$address_alias}.country_id";
         break;
       }
+
+      // join location type if needed
+      if ($field_spec['key'] == 'location_type') {
+        $prefix_alias = $this->getAlias('location_type');
+        $joins[] = "LEFT JOIN civicrm_location_type {$prefix_alias} ON {$prefix_alias}.id = {$address_alias}.location_type_id";
+        break;
+      }
     }
+
+
   }
 
   /**
@@ -80,6 +89,11 @@ class CRM_Xportx_Module_Address extends CRM_Xportx_Module {
         case 'country':
           $prefix_alias = $this->getAlias('country');
           $selects[] = "{$prefix_alias}.name AS {$value_prefix}country";
+          break;
+
+        case 'location_type':
+          $prefix_alias = $this->getAlias('location_type');
+          $selects[] = "{$prefix_alias}.name AS {$value_prefix}location_type";
           break;
 
         default:
