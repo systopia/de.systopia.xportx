@@ -9,7 +9,7 @@
 class CRM_Xportx_ExtensionUtil {
   const SHORT_NAME = "xportx";
   const LONG_NAME = "de.systopia.xportx";
-  const CLASS_PREFIX = "CRM_xportx";
+  const CLASS_PREFIX = "CRM_Xportx";
 
   /**
    * Translate a string using the extension's domain.
@@ -205,14 +205,14 @@ function _xportx_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 }
 
 /**
- * @return CRM_xportx_Upgrader
+ * @return CRM_Xportx_Upgrader
  */
 function _xportx_civix_upgrader() {
-  if (!file_exists(__DIR__ . '/CRM/xportx/Upgrader.php')) {
+  if (!file_exists(__DIR__ . '/CRM/Xportx/Upgrader.php')) {
     return NULL;
   }
   else {
-    return CRM_xportx_Upgrader_Base::instance();
+    return CRM_Xportx_Upgrader_Base::instance();
   }
 }
 
