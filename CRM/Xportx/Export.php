@@ -217,18 +217,45 @@ class CRM_Xportx_Export {
    * @return array(array('key' => key, 'label' -> 'header'),...)
    */
   public function getFieldList() {
-    $field_list = array();
-
-    for ($i=0; $i < count($this->modules); $i++) {
-      $module = $this->modules[$i];
-      $key_prefix = "module{$i}_";
-      $module_fields = $module->getFieldList();
-      foreach ($module_fields as $module_field) {
-        $module_field['key'] = $key_prefix . $module_field['key'];
-        $field_list[] = $module_field;
+    static $field_list = NULL;
+    if ($field_list === NULL) {
+      $field_list = [];
+      for ($i=0; $i < count($this->modules); $i++) {
+        $module = $this->modules[$i];
+        $key_prefix = "module{$i}_";
+        $module_fields = $module->getFieldList();
+        foreach ($module_fields as $module_field) {
+          $module_field['key'] = $key_prefix . $module_field['key'];
+          $field_list[] = $module_field;
+        }
       }
     }
     return $field_list;
+  }
+
+  /**
+   * Get a field spec by label
+   *
+   * @param $label string label used to identify the field
+   * @return array|null field spec
+   */
+  public function getFieldByLabel($label) {
+    static $label2field = [];
+    if (!array_key_exists($label, $label2field)) {
+      // search fields
+      for ($i=0; $i < count($this->modules); $i++) {
+        $module = $this->modules[$i];
+        $module_fields = $module->getFieldList();
+        foreach ($module_fields as $module_field) {
+          if ($module_field['label'] == $label) {
+            $label2field[$label] = $module_field;
+            return $module_field;
+          }
+        }
+      }
+      $label2field[$label] = NULL;
+    }
+    return $label2field[$label];
   }
 
   /**

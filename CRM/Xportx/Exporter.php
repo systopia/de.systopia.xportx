@@ -20,13 +20,17 @@ use CRM_Xportx_ExtensionUtil as E;
  */
 abstract class CRM_Xportx_Exporter {
 
-  protected $config;
+  /** @var CRM_Xportx_Export */
   protected $export;
+  protected $config;
+  protected $tmp_store;
   protected $_filter_cache;
+
 
   public function init($config, $export) {
     $this->export = $export;
     $this->config = $config;
+    $this->tmp_store = [];
     $this->_filter_cache = [];
   }
 
@@ -51,19 +55,38 @@ abstract class CRM_Xportx_Exporter {
    * applying any filters specified in the export configuration
    */
   public function getFieldValue($record, $field) {
-    $value = $this->export->getFieldValue($record, $field);
+    return $this->export->getFieldValue($record, $field);
+  }
+
+  /**
+   * Internal function to return the final value, after filters etc.
+   */
+  protected function getExportFieldValue($record, $field) {
+    $value = $this->getFieldValue($record, $field);
 
     // apply filters
-    $filters = $this->getFiltersForField($field['label']);
+    $filters = $this->getFiltersForField($field);
     foreach ($filters as $filter) {
       switch ($filter['type']) {
-        case 'preg_replace':
+        case 'preg_replace': // regex replace on the final value
           $value = preg_replace($filter['pattern'], $filter['replacement'], $value);
           break;
 
-        case 'mapping':
+        case 'mapping':     // map the final value
           if (array_key_exists($value, $filter['mapping'])) {
             $value = $filter['mapping'][$value];
+          }
+          break;
+
+        case 'keep_regex':  // clear value, unless it matches a certain regex (even from another field)
+          $source = $value;
+          if (!empty($filter['source'])) {
+            // a different source is defined
+            $source = $this->getTempValue($filter['source']);
+          }
+          if (!preg_match($filter['pattern'], $source)) {
+            // doesn't match -> clear value
+            $value = NULL;
           }
           break;
 
@@ -72,17 +95,23 @@ abstract class CRM_Xportx_Exporter {
       }
     }
 
-    return $value;
+    // store to temps if requested
+    if (!empty($field['tmp_store'])) {
+      $this->setTempValue($field['tmp_store'], $value);
+    }
   }
 
   /**
    * Get the list of filters that should be applied to the given field
-   * @param $field_label string field label
+   * @param $field array field spec
    * @return array list of filter objects
    */
-  protected function getFiltersForField($field_label) {
+  protected function getFiltersForField($field) {
+    $field_label = $field['label'];
     if (!isset($this->_filter_cache[$field_label])) {
       $filters = [];
+
+      // add filters in the exporter config
       if (!empty($this->config['filters']) && is_array($this->config['filters'])) {
         foreach ($this->config['filters'] as $filter) {
           if ($filter['field_label'] == $field_label || $filter['field_label'] == '*') {
@@ -90,8 +119,49 @@ abstract class CRM_Xportx_Exporter {
           }
         }
       }
+
+      // add filters in the field spec
+      if (!empty($field['filters'])) {
+        foreach ($field['filters'] as $filter) {
+          $filters[] = $filter;
+        }
+      }
+
       $this->_filter_cache[$field_label] = $filters;
     }
     return $this->_filter_cache[$field_label];
+  }
+
+  /**
+   * Temporary values can be used to pass data within one row.
+   *  A field value gets automatically stored to the temp values,
+   *  if the "tmp_store" property is set in the field
+   *
+   * @param $name   string tmp name
+   * @param $value  string value
+   */
+  public function setTempValue($name, $value) {
+    $this->tmp_store[$name] = $value;
+  }
+
+  /**
+   * Temporary values can be used to pass data within one row.
+   *  A field value gets automatically stored to the temp values,
+   *  if the "tmp_store" property is set in the field
+   *
+   * @param $name        string tmp name
+   * @return string|null the value
+   */
+  public function getTempValue($name) {
+    return CRM_Utils_Array::value($name, $this->tmp_store, NULL);
+  }
+
+  /**
+   * Temporary values can be used to pass data within one row.
+   *  A field value gets automatically stored to the temp values,
+   *  if the "tmp_store" property is set in the field
+   */
+  public function resetTmpStore() {
+    $this->tmp_store = [];
   }
 }

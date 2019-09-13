@@ -56,7 +56,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter {
     while ($data->fetch()) {
       $record = array();
       foreach ($fields as $field) {
-        $record[$field['label']] = $this->getFieldValue($data, $field);
+        $record[$field['label']] = $this->getExportFieldValue($data, $field);
       }
       $records[] = $record;
     }
