@@ -134,16 +134,28 @@ class CRM_Xportx_Export {
    * Add the group by clause for the main entity
    * @return string group by statement
    */
-  protected function getEntityGroupBy() {
+  protected function getGroupClause() {
+    $group_clauses = [];
     $base_alias = $this->getBaseAlias();
 
+    // get the default clause
     switch ($this->entity) {
       case 'GroupContact':
-        return " GROUP BY {$base_alias}.contact_id";
+        $group_clauses[] = "GROUP BY {$base_alias}.contact_id";
+        break;
 
       default:
-        return " GROUP BY {$base_alias}.id";
+        $group_clauses[] = "GROUP BY {$base_alias}.id";
+        break;
     }
+
+    // add groups clauses from the modules
+    foreach ($this->modules as $module) {
+      /** @var $module CRM_Xportx_Module */
+      $group_clauses = array_merge($group_clauses, $module->getGroupClauses());
+    }
+
+    return ' ' . implode(', ', $group_clauses);
   }
 
   /**
@@ -193,7 +205,7 @@ class CRM_Xportx_Export {
     $sql .= " FROM {$base_table} {$base_alias} ";
     $sql .= implode(' ', $joins);
     $sql .= ' WHERE (' . implode(') AND (', $wheres) . ')';
-    $sql .= $this->getEntityGroupBy();
+    $sql .= $this->getGroupClause();
     if (!empty($order_bys)) {
       $sql .= ' ORDER BY ' . implode(', ', $order_bys);
     }

@@ -139,6 +139,14 @@ abstract class CRM_Xportx_Module {
     return 'Contact';
   }
 
+  /**
+   * Add group clauses to the generic one
+   *
+   * @return array clauses
+   */
+  public function getGroupClauses() {
+    return [];
+  }
 
   /**
    * Get the value for the given key form the given record
