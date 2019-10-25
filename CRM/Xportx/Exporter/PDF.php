@@ -73,6 +73,13 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter {
 //    $html_data = $smarty->fetch($this->config['smarty_template']);
     $html_data = $smarty->fetch($template_path);
 
+    // log html for debugging
+    if (!empty($this->config['debug'])) {
+      $tmp_filename = $smarty->compile_dir . 'last_' . $this->getFileName() . '.html';
+      file_put_contents($tmp_filename, $html_data);
+      Civi::log()->debug("XPortX/PDF: stored source html for debugging in {$tmp_filename}");
+    }
+
     if (empty($this->config['enforce_dompdf'])) {
       // use default PDF engine
       $pdf_data  = CRM_Utils_PDF_Utils::html2pdf($html_data, $this->getFileName(),TRUE, $this->config['format_id']);
