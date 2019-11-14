@@ -62,12 +62,17 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter {
 
     // now run through the fields
     while ($data->fetch()) {
-      $row = array();
+      $record = [];
+      $row = [];
       foreach ($fields as $field) {
-        $row[] = $this->getExportFieldValue($data, $field);
+        $value = $this->getExportFieldValue($data, $field);
+        $row[] = $value;
+        $record[$field['label']] = $value;
       }
-      $this->encodeRow($row);
-      fputcsv($handle, $row, $delimiter);
+      if ($this->exportRow($record)) {
+        $this->encodeRow($row);
+        fputcsv($handle, $row, $delimiter);
+      }
     }
   }
 

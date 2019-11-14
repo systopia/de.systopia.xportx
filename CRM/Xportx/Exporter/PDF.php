@@ -58,7 +58,9 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter {
       foreach ($fields as $field) {
         $record[$field['label']] = $this->getExportFieldValue($data, $field);
       }
-      $records[] = $record;
+      if ($this->exportRow($record)) {
+        $records[] = $record;
+      }
     }
 
     // get template file URL

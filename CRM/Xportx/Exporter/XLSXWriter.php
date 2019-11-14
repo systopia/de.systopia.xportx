@@ -76,11 +76,16 @@ class CRM_Xportx_Exporter_XLSXWriter extends CRM_Xportx_Exporter {
 
     // now run through the fields
     while ($data->fetch()) {
-      $row = array();
+      $record = [];
+      $row = [];
       foreach ($fields as $field) {
-        $row[] = $this->getExportFieldValue($data, $field);
+        $value = $this->getExportFieldValue($data, $field);
+        $row[] = $value;
+        $record[$field['label']] = $value;
       }
-      $writer->writeSheetRow($sheet_name, $row);
+      if ($this->exportRow($record)) {
+        $writer->writeSheetRow($sheet_name, $row);
+      }
     }
 
     // write to temporary file
