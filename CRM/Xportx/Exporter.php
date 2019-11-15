@@ -104,6 +104,45 @@ abstract class CRM_Xportx_Exporter {
   }
 
   /**
+   * Run the row filters (if any) to determine, whether
+   *  this row should be kept for exporting
+   *
+   * @param $row_data
+   * @return boolean TRUE if it should be exported
+   */
+  protected function exportRow($row_data) {
+    $row_filters = CRM_Utils_Array::value("row_filters", $this->config, []);
+    foreach ($row_filters as $row_filter) {
+      switch ($row_filter['type']) {
+        case 'unique_row':
+          // build row key
+          $row_keys_elements = [];
+          $column_list = (is_array($row_filter['columns'])) ? $row_filter['columns'] : array_keys($row_data);
+          foreach ($column_list as $column_name) {
+            $row_keys_elements[] = CRM_Utils_Array::value($column_name, $row_data, '');
+          }
+          $row_key = implode("\x01", $row_keys_elements);
+
+          // check if this key has been used before
+          $known_row_keys = $this->getTempValue('rf_unique_row_keys', []);
+          if (isset($known_row_keys[$row_key])) {
+            // this is a duplicate row (judged by the listed columns)
+            return FALSE;
+          } else {
+            // this is NOT a duplicate, store key and move on
+            $known_row_keys[$row_key] = TRUE;
+            $this->setTempValue('rf_unique_row_keys', $known_row_keys);
+          }
+          break;
+
+        default:
+          throw new Exception("XPortX: Unknown row filter type '{$row_filter['type']}'");
+      }
+    }
+    return TRUE;
+  }
+
+  /**
    * Get the list of filters that should be applied to the given field
    * @param $field array field spec
    * @return array list of filter objects
@@ -140,7 +179,7 @@ abstract class CRM_Xportx_Exporter {
    *  if the "tmp_store" property is set in the field
    *
    * @param $name   string tmp name
-   * @param $value  string value
+   * @param $value  mixed value
    */
   public function setTempValue($name, $value) {
     $this->tmp_store[$name] = $value;
@@ -152,10 +191,11 @@ abstract class CRM_Xportx_Exporter {
    *  if the "tmp_store" property is set in the field
    *
    * @param $name        string tmp name
-   * @return string|null the value
+   * @param $default     mixed  default value if not set yet
+   * @return mixed|null the value
    */
-  public function getTempValue($name) {
-    return CRM_Utils_Array::value($name, $this->tmp_store, NULL);
+  public function getTempValue($name, $default = NULL) {
+    return CRM_Utils_Array::value($name, $this->tmp_store, $default);
   }
 
   /**
