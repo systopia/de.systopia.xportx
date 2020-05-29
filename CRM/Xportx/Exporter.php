@@ -90,6 +90,13 @@ abstract class CRM_Xportx_Exporter {
           }
           break;
 
+        case 'resolve_option_value':  // replace option values with their respective labels
+          if (!empty($filter['option_group_id'])) {
+            // a different source is defined
+            $value = $this->resolveOptionValue($value, $filter['option_group_id']);
+          }
+          break;
+
         default:
           throw new Exception("XPortX: Unknown filter type '{$filter['type']}'");
       }
@@ -206,4 +213,51 @@ abstract class CRM_Xportx_Exporter {
   public function resetTmpStore() {
     $this->tmp_store = [];
   }
+
+    /**
+     * Resolve a option value to the respective labels
+     *
+     * @param string $value
+     *      string of option value (key) - potentially packed
+     *
+     * @param string $option_group_id
+     *      option group name or ID
+     *
+     * @param string $glue
+     *      separator for multiple values, default is ', '
+     *
+     * @return string
+     *      values resolved to labels
+     */
+    protected function resolveOptionValue($value, $option_group_id, $glue = ', ')
+    {
+        // unpack value
+        $values = CRM_Utils_Array::explodePadded($value);
+        if (empty($values)) return '';
+
+        // get option group map (cached)
+        static $option_groups = [];
+        if (!isset($option_groups[$option_group_id])) {
+            // load option group
+            $option_values = [];
+            $query = civicrm_api3('OptionValue', 'get', [
+                'option_group_id' => $option_group_id,
+                'return'          => 'value,label',
+                'option.limit'    => 0,
+            ]);
+            foreach ($query['values'] as $option_value) {
+                $option_values[$option_value['value']] = $option_value['label'];
+            }
+            $option_groups[$option_group_id] = $option_values;
+        }
+        $key_map = $option_groups[$option_group_id];
+
+        // map values
+        $resolved_values = [];
+        foreach ($values as $value) {
+            $resolved_values[] = CRM_Utils_Array::value($value, $key_map, $value);
+        }
+
+        return implode($glue, $resolved_values);
+    }
 }
