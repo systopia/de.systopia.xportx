@@ -20,7 +20,6 @@ use CRM_Xportx_ExtensionUtil as E;
  * Add links to groups
  */
 function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
-  Civi::log()->debug("$op, $objectName, $objectId");
   if ($objectName == 'Group' && $op == 'group.selector.row') {
     // add rebook link
     $links[] = [
