@@ -72,7 +72,7 @@ class CRM_Xportx_Module_Tags extends CRM_Xportx_Module
                     break;
 
                 default:
-                    throw new Exception(E::ts("Unknown field key %1.%2!", [1 => 'Email', 2 => $field_name]));
+                    throw new Exception(E::ts("Unknown field key %1.%2!", [1 => 'Tags', 2 => $field_name]));
             }
         }
     }
