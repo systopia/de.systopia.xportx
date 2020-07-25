@@ -1,44 +1,31 @@
-# de.systopia.xportx
+# Extended Export Framework (XPortX)
 
-![Screenshot](/images/screenshot.png)
+This is a toolkit for creating fixed custom exports, that can be used as search actions from 
+any CiviCRM search - using these custom exports couldn't be easier.
 
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+However, *defining* such exports is a lot more difficult; this part of the extension aims at expert users 
+that have a good understanding of the data structures underlying CiviCRM. If that doesn't scare 
+you, have a look at the example specification files in ``xportx_configurations/examples``.
 
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
-## Requirements
+## How does it work?
 
-* PHP v5.4+
-* CiviCRM (*FIXME: Version number*)
+An XPortX export is defined by three parts:
+1. XPortX modules as building blocks to compile an SQL search query. You can find them in ``CRM/Xportx/Module``
+2. XPortX export modules to render the search results. There currently are CSV, XLS, and PDF exporters. You can find them in ``CRM/Xportx/Exporter``
+3. A ``json`` specification file defining the search, by specifying which modules are used in which order.
 
-## Installation (Web UI)
+Once this specification file is placed in the config folder (either this extension's ``xportx_configurations`` folder
+or the system's ``sites/default/files/civicrm/persist/xportx_configurations`` folder), 
+the search is available to the user.
 
-This extension has not yet been published for installation via the web UI.
+## How can I extend this?
 
-## Installation (CLI, Zip)
+First of all, if you have created a module that works on CiviCRM's core data structure, PRs for 
+new modules are always welcome.
 
-Sysadmins and developers may download the `.zip` file for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-cd <extension-dir>
-cv dl de.systopia.xportx@https://github.com/FIXME/de.systopia.xportx/archive/master.zip
-```
-
-## Installation (CLI, Git)
-
-Sysadmins and developers may clone the [Git](https://en.wikipedia.org/wiki/Git) repo for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-git clone https://github.com/FIXME/de.systopia.xportx.git
-cv en xportx
-```
-
-## Usage
-
-(* FIXME: Where would a new user navigate to get started? What changes would they see? *)
-
-## Known Issues
-
-(* FIXME *)
+However, since the modules are simply referred to by class name in the ``json`` specification file, nothing will stop 
+you from creating your own modules and add them to the search. We have created
+a couple of extensions that ship their own XPortX modules to access their particular
+data structures.
