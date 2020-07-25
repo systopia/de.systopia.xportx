@@ -1,0 +1,107 @@
+{
+  "title": "Basic Export",
+  "description": "Exportiert Grußformel (also sehr geehrte..../Lieber), Anrede (Herrn/Frau), Titel, Vorname, Name, Hauptadresse, E-Mail-Adresse.",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "postal_greeting_display",
+            "label": "Grußformel"
+          },
+          {
+            "key": "prefix",
+            "label": "Anrede"
+          },
+          {
+            "key": "formal_title",
+            "label": "Titel"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          },
+          {
+            "key": "last_name",
+            "label": "Name"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_AddressOrganisation",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "display_name",
+            "label": "Organisation"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Address",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "supplemental_address_1",
+            "label": "Adresszusatz"
+          },
+          {
+            "key": "street_address",
+            "label": "Strasse"
+          },
+          {
+            "key": "postal_code",
+            "label": "PLZ"
+          },
+          {
+            "key": "city",
+            "label": "Ort"
+          },
+          {
+            "key": "country",
+            "label": "Land",
+            "ts": true,
+            "ts_params": {"context": "country"}
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "sheet_name": "Export",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter",
+        "PLZ": "integer"
+      },
+      "file_name": "Export-{date}.xlsx"
+    }
+  }
+}

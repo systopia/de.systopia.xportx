@@ -1,0 +1,90 @@
+{
+  "title": "Participant List",
+  "entity": "Participant",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "formal_title",
+            "label": "Titel"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          },
+          {
+            "key": "last_name",
+            "label": "Name"
+          }
+        ],
+        "disabled_order_by": [
+          {
+            "alias": "contact",
+            "field": "sort_name",
+            "sort": "asc"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_AddressOrganisation",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "display_name",
+            "label": "Organisation"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Participant",
+      "config": {
+        "params": {
+        },
+        "fields": [
+          {
+            "key": "status",
+            "label": "Teilnehmer-Status"
+          },
+          {
+            "key": "role",
+            "label": "Teilnehmerrolle"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "sheet_name": "Teilnehmer",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter"
+      },
+      "file_name": "Teilnehmerliste-{date}.xlsx"
+    }
+  }
+}

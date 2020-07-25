@@ -1,0 +1,402 @@
+{
+  "title": "Contact Leads",
+  "description": "Exports the contacts along with their leads",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "id",
+            "label": "CiviCRM ID"
+          },
+          {
+            "key": "first_name",
+            "label": "First Name"
+          },
+          {
+            "key": "last_name",
+            "label": "Last Name"
+          },
+          {
+            "key": "formal_title",
+            "label": "Title"
+          },
+          {
+            "key": "organization_name",
+            "label": "Organization Name"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_CustomGroup",
+      "config": {
+        "params": {
+          "group_name": "organisation_info",
+          "join_spec": {
+            "type": "contact_type_map",
+            "spec": {
+              "Individual": "employer_id"
+            }
+          }
+        },
+        "fields": [
+          {
+            "key": "organisation_type",
+            "label": "Organization Type",
+            "filters": [
+              {
+                "type": "resolve_option_value",
+                "option_group_id": "organisation_type"
+              }
+            ]
+          },
+          {
+            "key": "organisation_category",
+            "label": "Organization Category",
+            "filters": [
+              {
+                "type": "resolve_option_value",
+                "option_group_id": "organisation_category"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "source",
+            "label": "Contact Origin"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "Email"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_AddressHierarchy",
+      "config": {
+        "params": {
+          "hierarchy": ["primary"]
+        },
+        "fields": [
+          {
+            "key": "street_address",
+            "label": "Street"
+          },
+          {
+            "key": "supplemental_address_1",
+            "label": "Supplemental Address 1"
+          },
+          {
+            "key": "supplemental_address_2",
+            "label": "Supplemental Address 2"
+          },
+          {
+            "key": "postal_code",
+            "label": "Postal Code"
+          },
+          {
+            "key": "city",
+            "label": "City"
+          },
+          {
+            "key": "country",
+            "label": "Country",
+            "ts": true,
+            "ts_params": {"context": "country"}
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_ContactLeads",
+      "config": {
+        "active_only": true,
+        "fields": [
+          {
+            "key": "display_name",
+            "label": "Contact Lead"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Tags",
+      "config": {
+        "fields": [
+          {
+            "key": "tag_list",
+            "label": "Tags"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Groups",
+      "config": {
+        "fields": [
+          {
+            "key": "group_list",
+            "label": "Groups"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "do_not_email",
+            "label": "Email Preferences",
+            "filters": [
+              {
+                "type": "mapping",
+                "mapping": {
+                  "": "",
+                  "0": "",
+                  "1": "do not email"
+                }
+              }
+            ]
+          },
+          {
+            "key": "preferred_language",
+            "label": "Preferred Language",
+            "filters": [
+              {
+                "type": "preg_replace",
+                "pattern": "/^([a-z]{2}).*/",
+                "replacement": "$1"
+              },
+              {
+                "type": "mapping",
+                "mapping": {
+                  "aa": "Afar",
+                  "ab": "Abchasisch",
+                  "ae": "Avestisch",
+                  "af": "Afrikaans",
+                  "ak": "Akan",
+                  "am": "Amharisch",
+                  "an": "Aragonesisch",
+                  "ar": "Arabic",
+                  "as": "Assamesisch",
+                  "av": "Awarisch",
+                  "ay": "Aymara",
+                  "az": "Aserbaidschanisch",
+                  "ba": "Baschkirisch",
+                  "be": "Weißrussisch",
+                  "bg": "Bulgarian",
+                  "bh": "Bihari",
+                  "bi": "Bislama",
+                  "bm": "Bambara",
+                  "bn": "Bengalisch",
+                  "bo": "Tibetan",
+                  "br": "Bretonisch",
+                  "bs": "Bosnisch",
+                  "ca": "Catalan",
+                  "ce": "Tschetschenisch",
+                  "ch": "Chamorro",
+                  "co": "Korsisch",
+                  "cr": "Cree",
+                  "cs": "Czech",
+                  "cv": "Tschuwaschisch",
+                  "cy": "Welsh",
+                  "da": "Danish",
+                  "de": "German",
+                  "dv": "Dhivehi",
+                  "dz": "Dzongkha",
+                  "ee": "Ewe",
+                  "el": "Greek",
+                  "en": "English",
+                  "eo": "Esperanto",
+                  "es": "Spanish",
+                  "et": "Estonian",
+                  "eu": "Baskisch",
+                  "fa": "Persian",
+                  "ff": "Fula",
+                  "fi": "Finnish",
+                  "fj": "Fidschi",
+                  "fo": "Färöisch",
+                  "fr": "French",
+                  "fy": "Frisian",
+                  "ga": "Irish",
+                  "gd": "Gaelic",
+                  "gl": "Galician",
+                  "gn": "Guarani­",
+                  "gu": "Gujarati",
+                  "gv": "Manx",
+                  "ha": "Hausa",
+                  "he": "Hebrew",
+                  "hi": "Hindi",
+                  "ho": "Hiri Motu",
+                  "hr": "Kroatisch",
+                  "ht": "Haitian",
+                  "hu": "Hungarian",
+                  "hy": "Armenisch",
+                  "hz": "Herero",
+                  "ia": "Interlingua",
+                  "id": "Indonesian",
+                  "ie": "Interlingue",
+                  "ig": "Igbo",
+                  "ii": "Nuosu",
+                  "ik": "Inupiaq",
+                  "io": "Ido",
+                  "is": "Icelandic",
+                  "it": "Italian",
+                  "iu": "Inuktitut",
+                  "ja": "Japanese",
+                  "jv": "Javanese",
+                  "ka": "Georgian",
+                  "kg": "Kongo",
+                  "ki": "Kikuyu",
+                  "kj": "Kwanyama",
+                  "kk": "Kazakh",
+                  "kl": "Kalaallisut",
+                  "km": "Khmer",
+                  "kn": "Kannada",
+                  "ko": "Korean",
+                  "kr": "Kanuri",
+                  "ks": "Kashmiri",
+                  "ku": "Kurdish",
+                  "kv": "Komi",
+                  "kw": "Kornisch",
+                  "ky": "Kirghiz",
+                  "la": "Latin",
+                  "lb": "Luxembourgish",
+                  "lg": "Luganda",
+                  "li": "Limburgish",
+                  "ln": "Lingala",
+                  "lo": "Lao",
+                  "lt": "Lithuanian",
+                  "lu": "Luba-Katanga",
+                  "lv": "Latvian",
+                  "mg": "Malagasy",
+                  "mh": "Marshallese",
+                  "mi": "Māori",
+                  "mk": "Macedonian",
+                  "ml": "Malayalam",
+                  "mn": "Mongolian",
+                  "mr": "Marathi",
+                  "ms": "Malay",
+                  "mt": "Maltese",
+                  "my": "Birmanisch",
+                  "na": "Nauru",
+                  "nb": "Norwegian",
+                  "nd": "Ndebele",
+                  "ne": "Nepali",
+                  "ng": "Ndonga",
+                  "nl": "Dutch",
+                  "nn": "Nynorsk",
+                  "no": "Norwegian",
+                  "nr": "South Ndebele",
+                  "nv": "Navajo",
+                  "ny": "Chichewa",
+                  "oc": "Occitan",
+                  "oj": "Ojibwa",
+                  "om": "Oromo",
+                  "or": "Oriya",
+                  "os": "Ossetian",
+                  "pa": "Panjabi",
+                  "pi": "Pali",
+                  "pl": "Polish",
+                  "ps": "Pashto",
+                  "pt": "Portuguese",
+                  "qu": "Quechua",
+                  "rm": "Romansh",
+                  "rn": "Kirundi",
+                  "ro": "Romanian, Moldavian",
+                  "ru": "Russian",
+                  "rw": "Kinyarwanda",
+                  "sa": "Sanskrit",
+                  "sc": "Sardinian",
+                  "sd": "Sindhi",
+                  "se": "Sami",
+                  "sg": "Sango",
+                  "si": "Sinhala",
+                  "sk": "Slovakian",
+                  "sl": "Slovenian",
+                  "sm": "Samoan",
+                  "sn": "Shona",
+                  "so": "Somali",
+                  "sq": "Albanian",
+                  "sr": "Serbian",
+                  "ss": "Swati",
+                  "st": "Sotho",
+                  "su": "Sundanese",
+                  "sv": "Swedish",
+                  "sw": "Swahili",
+                  "ta": "Tamil",
+                  "te": "Telugu",
+                  "tg": "Tajik",
+                  "th": "Thai",
+                  "ti": "Tigrinya",
+                  "tk": "Turkmen",
+                  "tl": "Tagalog",
+                  "tn": "Tswana",
+                  "to": "Tonga",
+                  "tr": "Turkish",
+                  "ts": "Tsonga",
+                  "tt": "Tatar",
+                  "tw": "Twi",
+                  "ty": "Tahitian",
+                  "ug": "Uighur",
+                  "uk": "Ukrainian",
+                  "ur": "Urdu",
+                  "uz": "Uzbek",
+                  "ve": "Venda",
+                  "vi": "Vietnamese",
+                  "vo": "Volapük",
+                  "wa": "Walloon",
+                  "wo": "Wolof",
+                  "xh": "Xhosa",
+                  "yi": "Yiddish",
+                  "yo": "Yoruba",
+                  "za": "Zhuang",
+                  "zh": "Chinese",
+                  "zu": "Zulu"
+                }
+              }
+            ],
+            "filters_not_working": [
+              {
+                "type": "resolve_option_value",
+                "option_group_id": "languages"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "sheet_name": "LeadsExport",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter"
+      },
+      "file_name": "LeadsExport-{date}.xlsx"
+    }
+  }
+}

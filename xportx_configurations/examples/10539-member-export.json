@@ -1,0 +1,59 @@
+{
+  "title": "Membership Export (XLS)",
+  "description": "Exportiert die Daten für die Mitgliederversammlung.",
+  "entity": "Contact",
+  "configuration": {},
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "last_name",
+            "label": "Nachname"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          },
+          {
+            "key": "birth_date",
+            "label": "Geburtsdatum"
+          },
+          {
+            "key": "gender_id",
+            "label": "Geschlecht",
+            "filters": [
+              {
+                "type": "mapping",
+                "mapping": {
+                  "1": "weiblich",
+                  "2": "männlich",
+                  "3": "divers"
+                }
+              }
+            ]
+          }
+        ],
+        "order_by": [
+          {
+            "alias": "contact",
+            "field": "sort_name",
+            "sort": "asc"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "sheet_name": "Mitglieder",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter",
+        "Postleitzahl": "string"
+      },
+      "file_name": "Mitgliederversammlungen-{date}.xlsx"
+    }
+  }
+}

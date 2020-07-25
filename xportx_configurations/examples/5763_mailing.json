@@ -1,0 +1,149 @@
+{
+  "title": "Paper Mailing",
+  "configuration": {
+  },
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "do_not_mail",
+            "label": "keine Post"
+          },
+          {
+            "key": "addressee_display",
+            "label": "Adressat"
+          },
+          {
+            "key": "first_name",
+            "label": "Vorname"
+          },
+          {
+            "key": "last_name",
+            "label": "Nachname"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_AddressOrganisation",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "display_name",
+            "label": "Hauptadresse gehört zu"
+          },
+          {
+            "key": "organisation_name_1",
+            "label": "Name Zeile 1"
+          },
+          {
+            "key": "organisation_name_2",
+            "label": "Name Zeile 2"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Address",
+      "config": {
+        "params": {
+          "location_type_id": false,
+          "primary": true
+        },
+        "fields": [
+          {
+            "key": "street_address",
+            "label": "Straße"
+          },
+          {
+            "key": "supplemental_address_1",
+            "label": "Adresszusatz 1"
+          },
+          {
+            "key": "supplemental_address_2",
+            "label": "Adresszusatz 2"
+          },
+          {
+            "key": "postal_code",
+            "label": "Postleitzahl"
+          },
+          {
+            "key": "city",
+            "label": "Stadt"
+          },
+          {
+            "key": "country",
+            "label": "Land",
+            "ts": true,
+            "ts_params": {"context": "country"}
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "location_type_id": 8,
+          "primary": false
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail (geschäftlich)"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_Email",
+      "config": {
+        "params": {
+          "location_type_id": 6,
+          "primary": false
+        },
+        "fields": [
+          {
+            "key": "email",
+            "label": "E-Mail (privat)"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_CustomGroup",
+      "config": {
+        "params": {
+          "group_name": "more_greetings_group"
+        },
+        "fields_disabled_needs_moregreetings_extension": [
+          {
+            "key": "greeting_field_2",
+            "label": "Formell: mit Titel"
+          },
+          {
+            "key": "greeting_field_4",
+            "label": "Informell: Du"
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "sheet_name": "Export",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter",
+        "PLZ": "integer"
+      },
+      "file_name": "Briefversand-{date}.xlsx"
+    }
+  }
+}

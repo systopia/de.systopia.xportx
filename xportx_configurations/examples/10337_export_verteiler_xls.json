@@ -1,0 +1,160 @@
+{
+  "title": "MailingList Export (XLS)",
+  "description": "Exportiert den Verteiler. Siehe 10337",
+  "entity": "GroupContact",
+  "configuration": {},
+  "modules": [
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "contact_type",
+            "label": "Kontaktart"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_GroupMetadata",
+      "config": {
+        "fields": [
+          {
+            "key": "addr_location_type_id",
+            "label": "Adresskategorie",
+            "filters": [
+              {
+                "type": "mapping",
+                "mapping": {
+                  "1": "Privat",
+                  "2": "dienstlich",
+                  "4": "sonstige",
+                  "5": "Rechnungen"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_GroupMetadata",
+      "config": {
+        "fields": [
+          {
+            "key": "magic_addressee",
+            "label": "Arbeitgeber"
+          },
+          {
+            "key": "addr_supplemental_address_1",
+            "label": "Adresszusatz 1"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_CustomGroup",
+      "config": {
+        "params": {
+          "group_name": "more_greetings_group"
+        },
+        "fields": [
+          {
+            "key": "greeting_field_4",
+            "label": "Adressat-Name"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_GroupMetadata",
+      "config": {
+        "fields": [
+          {
+            "key": "addr_supplemental_address_2",
+            "label": "Adresszusatz 2"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_ContactBase",
+      "config": {
+        "fields": [
+          {
+            "key": "job_title",
+            "label": "Funktion"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_GroupMetadata",
+      "config": {
+        "fields": [
+          {
+            "key": "addr_street_address",
+            "label": "Straße"
+          },
+          {
+            "key": "addr_postal_code",
+            "label": "PLZ"
+          },
+          {
+            "key": "addr_city",
+            "label": "Stadt"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_CustomGroup",
+      "config": {
+        "params": {
+          "group_name": "more_greetings_group"
+        },
+        "fields": [
+          {
+            "key": "greeting_field_2",
+            "label": "Formelle Grußformel"
+          }
+        ]
+      }
+    },
+    {
+      "class": "CRM_Xportx_Module_GroupMetadata",
+      "config": {
+        "fields": [
+          {
+            "key": "id",
+            "label": "Ansprechperson für Adressat-Name",
+            "filters": [
+              {
+                "type": "preg_replace",
+                "pattern": "/[0-9]+/",
+                "replacement": "Ja"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "exporter": {
+    "class": "CRM_Xportx_Exporter_XLSXWriter",
+    "config": {
+      "row_filters": [
+        {
+          "type": "unique_row",
+          "columns": ["Kontaktart","Adresskategorie","Adresszusatz 1","Adressat-Name","Adresszusatz 2","Funktion","Straße","PLZ","Stadt"]
+        }
+      ],
+      "sheet_name": "Verteiler",
+      "column_types": {
+        "_comment": "https://github.com/mk-j/PHP_XLSXWriter",
+        "Postleitzahl": "string"
+      },
+      "file_name": "Verteiler-{date}.xlsx"
+    }
+  }
+}
