@@ -171,16 +171,23 @@ class CRM_Xportx_Export
      * Get the SQL expression to be used
      *  to identify the contact ID
      *
+     * @param string $base_alias
+     *  allows you to override the base alias
+     *
      * @return string SQL expression
      */
-    public function getContactIdExpression()
+    public function getContactIdExpression($base_alias = null)
     {
+        if (empty($base_alias)) {
+            $base_alias = $this->getBaseAlias();
+        }
+
         switch ($this->entity) {
             case 'Contact':
-                return $this->getBaseAlias() . '.id';
+                return $base_alias . '.id';
 
             default:
-                return $this->getBaseAlias() . '.contact_id';
+                return $base_alias . '.contact_id';
         }
     }
 
