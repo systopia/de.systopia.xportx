@@ -68,7 +68,7 @@ class CRM_Xportx_Module_Groups extends CRM_Xportx_Module
             $field_name = $field_spec['key'];
             switch ($field_name) {
                 case 'group_list':
-                    $selects[] = "GROUP_CONCAT({$group_name_alias}.name) AS {$value_prefix}{$field_name}";
+                    $selects[] = "GROUP_CONCAT({$group_name_alias}.title) AS {$value_prefix}{$field_name}";
                     break;
 
                 default:
