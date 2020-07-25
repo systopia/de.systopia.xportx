@@ -20,86 +20,94 @@ use CRM_Xportx_ExtensionUtil as E;
  *
  * This exporter is only available for participant exports
  */
-class CRM_Xportx_Module_Participant extends CRM_Xportx_Module {
+class CRM_Xportx_Module_Participant extends CRM_Xportx_Module
+{
 
-  /**
-   * This module can do with any base_table
-   * (as long as it has a contact_id column)
-   */
-  public function forEntity() {
-    return 'Participant';
-  }
-
-  /**
-   * Get this module's preferred alias.
-   * Must be all lowercase chars: [a-z]+
-   */
-  public function getPreferredAlias() {
-    return 'participant';
-  }
-
-  /**
-   * add this module's joins clauses to the list
-   * they can only refer to the main contact table
-   * "contact" or other joins from within the module
-   */
-  public function addJoins(&$joins) {
-    // join participant table (strictly speaking not necessary, but we'll do anyway for compatibility)
-    $participant_alias = $this->getAlias('participant');
-    $base_alias = $this->getBaseAlias(); // this should be an alias of the civicrm_participant table
-    $joins[] = "LEFT JOIN civicrm_participant {$participant_alias} ON {$participant_alias}.id = {$base_alias}.id";
-
-    // join participant_roles?
-    foreach ($this->config['fields'] as $field_spec) {
-      if ($field_spec['key'] == 'role') {
-        // join roles table
-        $role_alias = $this->getAlias('participant_role');
-        $joins[] = $this->generateOptionValueJoin('participant_role', "{$participant_alias}.role_id", $role_alias);
-
-      } elseif ($field_spec['key'] == 'status') {
-        // join status entity
-        $status_alias = $this->getAlias('participant_status');
-        $joins[] = "LEFT JOIN civicrm_participant_status_type {$status_alias} ON {$status_alias}.id = {$participant_alias}.status_id";
-      }
+    /**
+     * This module can do with any base_table
+     * (as long as it has a contact_id column)
+     */
+    public function forEntity()
+    {
+        return 'Participant';
     }
 
-    // more joins?
+    /**
+     * Get this module's preferred alias.
+     * Must be all lowercase chars: [a-z]+
+     */
+    public function getPreferredAlias()
+    {
+        return 'participant';
+    }
 
-    // now add custom group joins (if any)
-    $this->addCustomFieldJoins($joins, $participant_alias);
-  }
+    /**
+     * add this module's joins clauses to the list
+     * they can only refer to the main contact table
+     * "contact" or other joins from within the module
+     */
+    public function addJoins(&$joins)
+    {
+        // join participant table (strictly speaking not necessary, but we'll do anyway for compatibility)
+        $participant_alias = $this->getAlias('participant');
+        $base_alias        = $this->getBaseAlias(); // this should be an alias of the civicrm_participant table
+        $joins[]           = "LEFT JOIN civicrm_participant {$participant_alias} ON {$participant_alias}.id = {$base_alias}.id";
 
-  /**
-   * add this module's select clauses to the list
-   * they can only refer to the main contact table
-   * "contact" or this module's joins
-   */
-  public function addSelects(&$selects) {
-    $participant_alias = $this->getAlias('participant');
-    $value_prefix  = $this->getValuePrefix();
-
-    foreach ($this->config['fields'] as $field_spec) {
-      $field_name = $field_spec['key'];
-      if ($this->isCustomField($field_name)) {
-        $this->addCustomFieldSelect($selects, $field_name);
-      } else {
-        switch ($field_name) {
-          case 'role':
-            $role_alias = $this->getAlias('participant_role');
-            $selects[] = "{$role_alias}.label AS {$value_prefix}{$field_name}";
-            break;
-
-          case 'status':
-            $status_alias = $this->getAlias('participant_status');
-            $selects[] = "{$status_alias}.label AS {$value_prefix}{$field_name}";
-            break;
-
-          default:
-            // the default ist a column from the contact table
-            $selects[] = "{$participant_alias}.{$field_name} AS {$value_prefix}{$field_name}";
-            break;
+        // join participant_roles?
+        foreach ($this->config['fields'] as $field_spec) {
+            if ($field_spec['key'] == 'role') {
+                // join roles table
+                $role_alias = $this->getAlias('participant_role');
+                $joins[]    = $this->generateOptionValueJoin(
+                    'participant_role',
+                    "{$participant_alias}.role_id",
+                    $role_alias
+                );
+            } elseif ($field_spec['key'] == 'status') {
+                // join status entity
+                $status_alias = $this->getAlias('participant_status');
+                $joins[]      = "LEFT JOIN civicrm_participant_status_type {$status_alias} ON {$status_alias}.id = {$participant_alias}.status_id";
+            }
         }
-      }
+
+        // more joins?
+
+        // now add custom group joins (if any)
+        $this->addCustomFieldJoins($joins, $participant_alias);
     }
-  }
+
+    /**
+     * add this module's select clauses to the list
+     * they can only refer to the main contact table
+     * "contact" or this module's joins
+     */
+    public function addSelects(&$selects)
+    {
+        $participant_alias = $this->getAlias('participant');
+        $value_prefix      = $this->getValuePrefix();
+
+        foreach ($this->config['fields'] as $field_spec) {
+            $field_name = $field_spec['key'];
+            if ($this->isCustomField($field_name)) {
+                $this->addCustomFieldSelect($selects, $field_name);
+            } else {
+                switch ($field_name) {
+                    case 'role':
+                        $role_alias = $this->getAlias('participant_role');
+                        $selects[]  = "{$role_alias}.label AS {$value_prefix}{$field_name}";
+                        break;
+
+                    case 'status':
+                        $status_alias = $this->getAlias('participant_status');
+                        $selects[]    = "{$status_alias}.label AS {$value_prefix}{$field_name}";
+                        break;
+
+                    default:
+                        // the default ist a column from the contact table
+                        $selects[] = "{$participant_alias}.{$field_name} AS {$value_prefix}{$field_name}";
+                        break;
+                }
+            }
+        }
+    }
 }

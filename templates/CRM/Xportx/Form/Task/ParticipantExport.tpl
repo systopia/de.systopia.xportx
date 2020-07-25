@@ -13,9 +13,9 @@
 +-------------------------------------------------------*}
 
 <div class="crm-section">
-  <div class="label">{$form.export_configuration.label}</div>
-  <div class="content">{$form.export_configuration.html}</div>
-  <div class="clear"></div>
+    <div class="label">{$form.export_configuration.label}</div>
+    <div class="content">{$form.export_configuration.html}</div>
+    <div class="clear"></div>
 </div>
 
 {include file="CRM/common/formButtons.tpl" location="bottom"}

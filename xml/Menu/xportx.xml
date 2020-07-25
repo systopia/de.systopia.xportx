@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <menu>
-  <item>
-    <path>civicrm/xportx/group</path>
-    <page_callback>CRM_Xportx_Form_ExportGroup</page_callback>
-    <title>ExportGroup</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
+    <item>
+        <path>civicrm/xportx/group</path>
+        <page_callback>CRM_Xportx_Form_ExportGroup</page_callback>
+        <title>ExportGroup</title>
+        <access_arguments>access CiviCRM</access_arguments>
+    </item>
 </menu>

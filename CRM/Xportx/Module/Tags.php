@@ -47,11 +47,11 @@ class CRM_Xportx_Module_Tags extends CRM_Xportx_Module
     public function addJoins(&$joins)
     {
         // join contact table anyway
-        $contact_id = $this->getContactIdExpression();
-        $tags_alias = $this->getAlias('tags');
+        $contact_id     = $this->getContactIdExpression();
+        $tags_alias     = $this->getAlias('tags');
         $tag_name_alias = $this->getAlias('tag_name');
-        $joins[]    = "LEFT JOIN civicrm_entity_tag {$tags_alias} ON {$tags_alias}.entity_id = {$contact_id}";
-        $joins[]    = "LEFT JOIN civicrm_tag {$tag_name_alias} ON {$tag_name_alias}.id = {$tags_alias}.tag_id";
+        $joins[]        = "LEFT JOIN civicrm_entity_tag {$tags_alias} ON {$tags_alias}.entity_id = {$contact_id}";
+        $joins[]        = "LEFT JOIN civicrm_tag {$tag_name_alias} ON {$tag_name_alias}.id = {$tags_alias}.tag_id";
     }
 
     /**
@@ -62,7 +62,7 @@ class CRM_Xportx_Module_Tags extends CRM_Xportx_Module
     public function addSelects(&$selects)
     {
         $tag_name_alias = $this->getAlias('tag_name');
-        $value_prefix = $this->getValuePrefix();
+        $value_prefix   = $this->getValuePrefix();
 
         foreach ($this->config['fields'] as $field_spec) {
             $field_name = $field_spec['key'];

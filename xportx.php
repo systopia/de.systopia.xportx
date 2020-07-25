@@ -14,21 +14,23 @@
 +--------------------------------------------------------*/
 
 require_once 'xportx.civix.php';
+
 use CRM_Xportx_ExtensionUtil as E;
 
 /**
  * Add links to groups
  */
-function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
-  if ($objectName == 'Group' && $op == 'group.selector.row') {
-    // add rebook link
-    $links[] = [
-        'name'  => E::ts('Export'),
-        'title' => E::ts('Export (Custom Presets)'),
-        'url'   => 'civicrm/xportx/group',
-        'qs'    => "group_id={$objectId}",
-    ];
-  }
+function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values)
+{
+    if ($objectName == 'Group' && $op == 'group.selector.row') {
+        // add rebook link
+        $links[] = [
+            'name'  => E::ts('Export'),
+            'title' => E::ts('Export (Custom Presets)'),
+            'url'   => 'civicrm/xportx/group',
+            'qs'    => "group_id={$objectId}",
+        ];
+    }
 }
 
 /**
@@ -39,18 +41,21 @@ function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$va
  *
  * @access public
  */
-function xportx_civicrm_searchTasks($objectType, &$tasks) {
-  if ($objectType == 'contact') {
-    $tasks[] = array(
-        'title' => E::ts('Export (Custom Presets)'),
-        'class' => 'CRM_Xportx_Form_Task_Export',
-        'result' => false);
-  } elseif ($objectType == 'event') {
-    $tasks[] = array(
-        'title' => E::ts('Export (Custom Presets)'),
-        'class' => 'CRM_Xportx_Form_Task_ParticipantExport',
-        'result' => false);
-  }
+function xportx_civicrm_searchTasks($objectType, &$tasks)
+{
+    if ($objectType == 'contact') {
+        $tasks[] = array(
+            'title'  => E::ts('Export (Custom Presets)'),
+            'class'  => 'CRM_Xportx_Form_Task_Export',
+            'result' => false
+        );
+    } elseif ($objectType == 'event') {
+        $tasks[] = array(
+            'title'  => E::ts('Export (Custom Presets)'),
+            'class'  => 'CRM_Xportx_Form_Task_ParticipantExport',
+            'result' => false
+        );
+    }
 }
 
 
@@ -59,8 +64,9 @@ function xportx_civicrm_searchTasks($objectType, &$tasks) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function xportx_civicrm_config(&$config) {
-  _xportx_civix_civicrm_config($config);
+function xportx_civicrm_config(&$config)
+{
+    _xportx_civix_civicrm_config($config);
 }
 
 /**
@@ -68,8 +74,9 @@ function xportx_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
-function xportx_civicrm_xmlMenu(&$files) {
-  _xportx_civix_civicrm_xmlMenu($files);
+function xportx_civicrm_xmlMenu(&$files)
+{
+    _xportx_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -77,8 +84,9 @@ function xportx_civicrm_xmlMenu(&$files) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function xportx_civicrm_install() {
-  _xportx_civix_civicrm_install();
+function xportx_civicrm_install()
+{
+    _xportx_civix_civicrm_install();
 }
 
 /**
@@ -86,8 +94,9 @@ function xportx_civicrm_install() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
  */
-function xportx_civicrm_postInstall() {
-  _xportx_civix_civicrm_postInstall();
+function xportx_civicrm_postInstall()
+{
+    _xportx_civix_civicrm_postInstall();
 }
 
 /**
@@ -95,8 +104,9 @@ function xportx_civicrm_postInstall() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
-function xportx_civicrm_uninstall() {
-  _xportx_civix_civicrm_uninstall();
+function xportx_civicrm_uninstall()
+{
+    _xportx_civix_civicrm_uninstall();
 }
 
 /**
@@ -104,8 +114,9 @@ function xportx_civicrm_uninstall() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
-function xportx_civicrm_enable() {
-  _xportx_civix_civicrm_enable();
+function xportx_civicrm_enable()
+{
+    _xportx_civix_civicrm_enable();
 }
 
 /**
@@ -113,8 +124,9 @@ function xportx_civicrm_enable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
-function xportx_civicrm_disable() {
-  _xportx_civix_civicrm_disable();
+function xportx_civicrm_disable()
+{
+    _xportx_civix_civicrm_disable();
 }
 
 /**
@@ -122,8 +134,9 @@ function xportx_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function xportx_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _xportx_civix_civicrm_upgrade($op, $queue);
+function xportx_civicrm_upgrade($op, CRM_Queue_Queue $queue = null)
+{
+    return _xportx_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -134,8 +147,9 @@ function xportx_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
-function xportx_civicrm_managed(&$entities) {
-  _xportx_civix_civicrm_managed($entities);
+function xportx_civicrm_managed(&$entities)
+{
+    _xportx_civix_civicrm_managed($entities);
 }
 
 /**
@@ -147,8 +161,9 @@ function xportx_civicrm_managed(&$entities) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
-function xportx_civicrm_caseTypes(&$caseTypes) {
-  _xportx_civix_civicrm_caseTypes($caseTypes);
+function xportx_civicrm_caseTypes(&$caseTypes)
+{
+    _xportx_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -161,8 +176,9 @@ function xportx_civicrm_caseTypes(&$caseTypes) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules
  */
-function xportx_civicrm_angularModules(&$angularModules) {
-  _xportx_civix_civicrm_angularModules($angularModules);
+function xportx_civicrm_angularModules(&$angularModules)
+{
+    _xportx_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -170,8 +186,9 @@ function xportx_civicrm_angularModules(&$angularModules) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
-function xportx_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _xportx_civix_civicrm_alterSettingsFolders($metaDataFolders);
+function xportx_civicrm_alterSettingsFolders(&$metaDataFolders = null)
+{
+    _xportx_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
 /**
@@ -181,6 +198,7 @@ function xportx_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
  */
-function xportx_civicrm_entityTypes(&$entityTypes) {
-  _xportx_civix_civicrm_entityTypes($entityTypes);
+function xportx_civicrm_entityTypes(&$entityTypes)
+{
+    _xportx_civix_civicrm_entityTypes($entityTypes);
 }
