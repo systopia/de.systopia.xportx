@@ -114,7 +114,7 @@ abstract class CRM_Xportx_Module
      * Get the alias of the base table,
      *  in most cases this would be 'contact' referring to
      *  the civicrm_contact table. You can be sure that
-     *  {base_alias].contact_id exists.
+     *  {base_alias}.contact_id exists.
      */
     public function getBaseAlias()
     {
@@ -130,7 +130,28 @@ abstract class CRM_Xportx_Module
      */
     public function getContactIdExpression()
     {
-        return $this->export->getContactIdExpression();
+        if (empty($this->config['params']['join_spec'])) {
+            return $this->export->getContactIdExpression();
+        } else {
+            $join_spec = $this->config['params']['join_spec'];
+            switch ($join_spec['type']) {
+                case 'contact_type_map':
+                    // build a nested IF statement for the join
+                    $spec = $join_spec['spec'];
+                    $base_alias = $this->getBaseAlias();
+                    $term = $this->export->getContactIdExpression();
+                    foreach (['Household', 'Organization', 'Individual'] as $contact_type) {
+                        if (!empty($spec[$contact_type])) {
+                            $term = "IF({$base_alias}.contact_type = '{$contact_type}', {$base_alias}.{$spec[$contact_type]}, {$term})";
+                        }
+                    }
+                    return $term;
+
+                default:
+                    throw new Exception(E::ts("Unknown join_spec type '%1'.", [1 => $join_spec['type']]));
+            }
+
+        }
     }
 
     /**
