@@ -82,6 +82,20 @@ abstract class CRM_Xportx_Exporter
                     }
                     break;
 
+                case 'format_datetime':    // format a time/date value with a date string
+                    $time_value = strtotime($value);
+                    if ($time_value) {
+                        // format with date()
+                        $format = CRM_Utils_Array::value('format', $filter);
+                        if ($format) {
+                            $value = date($format, $time_value);
+                        }
+                    } else {
+                        $value = ''; // no time entry
+
+                    }
+                    break;
+
                 case 'keep_regex':  // clear value, unless it matches a certain regex (even from another field)
                     $source = $value;
                     if (!empty($filter['source'])) {
