@@ -93,6 +93,17 @@ abstract class CRM_Xportx_Module
     }
 
     /**
+     * allows a module to create temporary tables if needed
+     *
+     * @param array $entity_ids
+     *  IDs
+     */
+    public function createTempTables($entity_ids)
+    {
+        // override if needed
+    }
+
+    /**
      * Get a numeric of this instance
      * (within its export context)
      */

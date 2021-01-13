@@ -206,6 +206,7 @@ class CRM_Xportx_Export
         $wheres    = array();
         $order_bys = array();
         foreach ($this->modules as $module) {
+            $module->createTempTables($entity_ids);
             $module->addJoins($joins);
             $module->addSelects($selects);
             $module->addWheres($wheres);
@@ -252,7 +253,7 @@ class CRM_Xportx_Export
 
         // get the data
         $sql = $this->generateSelectSQL($entity_ids);
-        CRM_Core_ERROR::debug_log_message($sql);
+        //Civi::log()->debug($sql);
         $data = CRM_Core_DAO::executeQuery($sql);
 
         // make the exporter write it to the stream
