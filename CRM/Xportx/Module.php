@@ -20,8 +20,9 @@ use CRM_Xportx_ExtensionUtil as E;
  */
 abstract class CRM_Xportx_Module
 {
-
+    /** @var array configuration */
     protected $config;
+
     /** @var CRM_Xportx_Export */
     protected $export;
 
