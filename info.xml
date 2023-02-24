@@ -18,9 +18,7 @@
   <version>1.0-dev</version>
   <develStage>dev</develStage>
   <compatibility>
-    <ver>4.7</ver>
-    <ver>5.3</ver>
-    <ver>5.19</ver>
+    <ver>5.27</ver>
   </compatibility>
   <comments/>
   <civix>
