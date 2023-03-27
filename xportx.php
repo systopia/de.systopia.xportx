@@ -87,15 +87,3 @@ function xportx_civicrm_enable()
 {
     _xportx_civix_civicrm_enable();
 }
-
-/**
- * Implements hook_civicrm_entityTypes().
- *
- * Declare entity types provided by this module.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_entityTypes
- */
-function xportx_civicrm_entityTypes(&$entityTypes)
-{
-    _xportx_civix_civicrm_entityTypes($entityTypes);
-}
