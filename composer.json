@@ -1,6 +1,6 @@
 {
   "require": {
-    "mk-j/php_xlsxwriter": "^0.37",
+    "synida/php_xlsxwriter": "^0.40",
     "ext-zip": "*"
   }
 }
