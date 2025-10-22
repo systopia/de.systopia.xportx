@@ -86,7 +86,7 @@ abstract class CRM_Xportx_Exporter
                     $time_value = strtotime($value);
                     if ($time_value) {
                         // format with date()
-                        $format = CRM_Utils_Array::value('format', $filter);
+                        $format = $filter['format'] ?? NULL;
                         if ($format) {
                             $value = date($format, $time_value);
                         }
