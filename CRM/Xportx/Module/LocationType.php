@@ -274,7 +274,7 @@ class CRM_Xportx_Module_LocationType extends CRM_Xportx_Module
                     $location_type_names[$location_type['id']] = $location_type['display_name'];
                 }
             }
-            return CRM_Utils_Array::value($location_type_id, $location_type_names, null);
+            return $location_type_names[$location_type_id] ?? NULL;
         } else {
             return null;
         }
