@@ -116,7 +116,7 @@ class CRM_Xportx_Module_AddressHierarchy extends CRM_Xportx_Module
     protected function getHierarchy()
     {
         if ($this->hierarchy === null) {
-            $this->hierarchy = array('primary'); // default
+            $this->hierarchy = ['primary']; // default
             if (!empty($this->config['params']['hierarchy'])) {
                 if (is_array($this->config['params']['hierarchy'])) {
                     $this->hierarchy = $this->config['params']['hierarchy'];

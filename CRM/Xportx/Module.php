@@ -208,7 +208,7 @@ abstract class CRM_Xportx_Module
 
             // translate the value
             if (!empty($field['ts'])) {
-                $params = CRM_Utils_Array::value('ts_params', $field, array());
+                $params = CRM_Utils_Array::value('ts_params', $field, []);
                 $value  = ts($value, $params);
             }
             return $value;
@@ -230,10 +230,10 @@ abstract class CRM_Xportx_Module
         // get group id (TODO: cache?)
         $group_id = CRM_Core_DAO::singleValueQuery(
             "SELECT id FROM civicrm_option_group WHERE name = %1",
-            array(1 => array($option_group_name, 'String'))
+            [1 => [$option_group_name, 'String']]
         );
         if (empty($group_id)) {
-            throw new Exception(E::ts("Unknown option group '%1'!", array(1 => $option_group_name)));
+            throw new Exception(E::ts("Unknown option group '%1'!", [1 => $option_group_name]));
         }
         return "LEFT JOIN civicrm_option_value {$alias} ON {$alias}.value = {$option_value_source} AND option_group_id = {$group_id}";
     }
@@ -268,7 +268,7 @@ abstract class CRM_Xportx_Module
      */
     protected function getCustomGroups()
     {
-        $custom_groups = array();
+        $custom_groups = [];
         foreach ($this->config['fields'] as $field_spec) {
             $match = $this->isCustomField($field_spec['key']);
             if ($match) {
@@ -296,10 +296,10 @@ abstract class CRM_Xportx_Module
             $table_name = civicrm_api3(
                 'CustomGroup',
                 'getvalue',
-                array(
+                [
                     'name'   => $group_name,
                     'return' => 'table_name'
-                )
+                ]
             );
 
             $joins[] = "LEFT JOIN {$table_name} {$group_alias} ON {$group_alias}.entity_id = {$entity_alias}.id";
@@ -326,11 +326,11 @@ abstract class CRM_Xportx_Module
             $cfield_column = civicrm_api3(
                 'CustomField',
                 'getvalue',
-                array(
+                [
                     'name'            => $cfield_name,
                     'custom_group_id' => $cgroup_name,
                     'return'          => 'column_name'
-                )
+                ]
             );
 
             $selects[] = "{$group_alias}.{$cfield_column} AS {$value_prefix}{$field_name}";

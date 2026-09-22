@@ -56,9 +56,9 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
         $fields = $this->export->getFieldList();
 
         // collect all records
-        $records = array();
+        $records = [];
         while ($data->fetch()) {
-            $record = array();
+            $record = [];
             foreach ($fields as $field) {
                 $record[$field['label']] = $this->getExportFieldValue($data, $field);
             }
@@ -74,7 +74,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
         // create PDF
         $smarty = CRM_Core_Smarty::singleton();
         $smarty->assign('records', $records);
-        $smarty->assign('first_record', isset($records[0]) ? $records[0] : array());
+        $smarty->assign('first_record', isset($records[0]) ? $records[0] : []);
         // add params from config?
 //    $html_data = $smarty->fetch($this->config['smarty_template']);
         $html_data = $smarty->fetch($template_path);
@@ -146,7 +146,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
      */
     protected static function dompdf_html2pdf(&$text, $fileName = 'civicrm.pdf', $output = false, $pdfFormat = null)
     {
-        $pages = array($text);
+        $pages = [$text];
 
         // Get PDF Page Format
         $format = CRM_Core_BAO_PdfFormat::getById($pdfFormat);
@@ -156,7 +156,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
         $paper_width  = CRM_Utils_PDF_Utils::convertMetric($paperSize['width'], $paperSize['metric'], 'pt');
         $paper_height = CRM_Utils_PDF_Utils::convertMetric($paperSize['height'], $paperSize['metric'], 'pt');
         // dompdf requires dimensions in points
-        $paper_size  = array(0, 0, $paper_width, $paper_height);
+        $paper_size  = [0, 0, $paper_width, $paper_height];
         $orientation = CRM_Core_BAO_PdfFormat::getValue('orientation', $format);
         $metric      = CRM_Core_BAO_PdfFormat::getValue('metric', $format);
         $t           = CRM_Core_BAO_PdfFormat::getValue('margin_top', $format);
@@ -172,7 +172,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
             $stationery_path = $doc_root . "/" . $stationery_path_partial;
         }
 
-        $margins = array($metric, $t, $r, $b, $l);
+        $margins = [$metric, $t, $r, $b, $l];
 
         $config = CRM_Core_Config::singleton();
 
@@ -192,7 +192,7 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
     <div id=\"crm-container\">\n";
 
         // Strip <html>, <header>, and <body> tags from each page
-        $htmlElementstoStrip = array(
+        $htmlElementstoStrip = [
             '@<head[^>]*?>.*?</head>@siu',
             '@<script[^>]*?>.*?</script>@siu',
             '@<body>@siu',
@@ -200,8 +200,8 @@ class CRM_Xportx_Exporter_PDF extends CRM_Xportx_Exporter
             '@<html[^>]*?>@siu',
             '@</html>@siu',
             '@<!DOCTYPE[^>]*?>@siu',
-        );
-        $htmlElementsInstead = array('', '', '', '', '', '');
+        ];
+        $htmlElementsInstead = ['', '', '', '', '', ''];
         foreach ($pages as & $page) {
             $page = preg_replace(
                 $htmlElementstoStrip,

@@ -58,7 +58,7 @@ class CRM_Xportx_Form_ExportGroup extends CRM_Core_Form
             'export_configuration',
             E::ts("Preset"),
             $configuration_list,
-            array('class' => 'huge'),
+            ['class' => 'huge'],
             true
         );
 
