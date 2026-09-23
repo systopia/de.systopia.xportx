@@ -44,17 +44,17 @@ function xportx_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$va
 function xportx_civicrm_searchTasks($objectType, &$tasks)
 {
     if ($objectType == 'contact') {
-        $tasks[] = array(
+        $tasks[] = [
             'title'  => E::ts('Export (Custom Presets)'),
             'class'  => 'CRM_Xportx_Form_Task_Export',
             'result' => false
-        );
+        ];
     } elseif ($objectType == 'event') {
-        $tasks[] = array(
+        $tasks[] = [
             'title'  => E::ts('Export (Custom Presets)'),
             'class'  => 'CRM_Xportx_Form_Task_ParticipantExport',
             'result' => false
-        );
+        ];
     }
 }
 

@@ -54,7 +54,7 @@ class CRM_Xportx_Export
         if (!isset($config['modules']) || !is_array($config['modules'])) {
             throw new Exception("XPortX: Export configuration has no 'modules' section.");
         }
-        $this->modules = array();
+        $this->modules = [];
         foreach ($config['modules'] as $module_spec) {
             $module = $this->getInstance($module_spec['class'], $module_spec['config']);
             if ($module) {
@@ -201,10 +201,10 @@ class CRM_Xportx_Export
     public function generateSelectSQL($entity_ids)
     {
         // collect SQL bits
-        $selects   = array();
-        $joins     = array();
-        $wheres    = array();
-        $order_bys = array();
+        $selects   = [];
+        $joins     = [];
+        $wheres    = [];
+        $order_bys = [];
         foreach ($this->modules as $module) {
             $module->createTempTables($entity_ids);
             $module->addJoins($joins);
@@ -375,7 +375,7 @@ class CRM_Xportx_Export
      */
     public static function getXportxLocations()
     {
-        $locations = array();
+        $locations = [];
         // TODO: find all other paths
 
         // add the folder in this extension
@@ -415,7 +415,7 @@ class CRM_Xportx_Export
     public static function getExportConfigurations($entity = 'Contact')
     {
         // find all export configurations in folder 'xportx_configurations'
-        $configurations = array();
+        $configurations = [];
 
         $locations = self::getXportxLocations();
         foreach ($locations as $folder) {

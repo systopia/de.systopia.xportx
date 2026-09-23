@@ -97,7 +97,7 @@ class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module
             $table_name  = civicrm_api3(
                 'CustomGroup',
                 'getvalue',
-                array('name' => $group_name, 'return' => 'table_name')
+                ['name' => $group_name, 'return' => 'table_name']
             );
             $joins[]     = "LEFT JOIN {$table_name} {$group_alias} ON {$group_alias}.entity_id = {$membership_alias}.id";
         }
@@ -124,7 +124,7 @@ class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module
                 $cfield_column = civicrm_api3(
                     'CustomField',
                     'getvalue',
-                    array('name' => $cfield_name, 'return' => 'column_name')
+                    ['name' => $cfield_name, 'return' => 'column_name']
                 );
                 $selects[]     = "{$group_alias}.{$cfield_column} AS {$value_prefix}{$field_name}";
             } else {
@@ -153,7 +153,7 @@ class CRM_Xportx_Module_FancyName extends CRM_Xportx_Module
      */
     protected function getCustomGroups()
     {
-        $custom_groups = array();
+        $custom_groups = [];
         foreach ($this->config['fields'] as $field_spec) {
             if (preg_match('/^custom_(?P<group_name>\w+)__(?P<field_name>\w+)$/', $field_spec['key'], $match)) {
                 // this is a custom field

@@ -62,9 +62,9 @@ class CRM_Xportx_Module_CustomGroup extends CRM_Xportx_Module
         return civicrm_api3(
             'CustomGroup',
             'getsingle',
-            array(
+            [
                 'name' => $this->config['params']['group_name']
-            )
+            ]
         );
     }
 
@@ -95,7 +95,7 @@ class CRM_Xportx_Module_CustomGroup extends CRM_Xportx_Module
         $custom_group = $this->getCustomGroup();
 
         // gather field names
-        $field_names = array();
+        $field_names = [];
         foreach ($this->config['fields'] as $field_spec) {
             $field_names[] = $field_spec['key'];
         }
@@ -109,15 +109,15 @@ class CRM_Xportx_Module_CustomGroup extends CRM_Xportx_Module
         $field_data = civicrm_api3(
             'CustomField',
             'get',
-            array(
+            [
                 'custom_group_id' => $custom_group['id'],
-                'name'            => array('IN' => $field_names),
+                'name'            => ['IN' => $field_names],
                 'option.limit'    => 0
-            )
+            ]
         );
 
         // compile result set
-        $fields = array();
+        $fields = [];
         foreach ($field_data['values'] as $field_entity) {
             $fields[$field_entity['name']] = $field_entity;
         }

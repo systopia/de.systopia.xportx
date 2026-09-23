@@ -31,7 +31,7 @@ class CRM_Xportx_Form_Task_ParticipantExport extends CRM_Event_Form_Task
     function buildQuickForm()
     {
         // init export object
-        $configuration_list = array();
+        $configuration_list = [];
         $configurations     = CRM_Xportx_Export::getExportConfigurations('Participant');
         foreach ($configurations as $key => $config) {
             $configuration_list[$key] = $config['title'];
@@ -43,7 +43,7 @@ class CRM_Xportx_Form_Task_ParticipantExport extends CRM_Event_Form_Task
             'export_configuration',
             E::ts("Preset"),
             $configuration_list,
-            array('class' => 'huge'),
+            ['class' => 'huge'],
             true
         );
 
@@ -51,7 +51,7 @@ class CRM_Xportx_Form_Task_ParticipantExport extends CRM_Event_Form_Task
         CRM_Utils_System::setTitle(
             E::ts(
                 'Export %1 Participants',
-                array(1 => count($this->_participantIds))
+                [1 => count($this->_participantIds)]
             )
         );
 

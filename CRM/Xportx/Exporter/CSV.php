@@ -57,7 +57,7 @@ class CRM_Xportx_Exporter_CSV extends CRM_Xportx_Exporter
 
         // compile header + write
         $fields  = $this->export->getFieldList();
-        $headers = array();
+        $headers = [];
         foreach ($fields as $field) {
             $headers[] = $field['label'];
         }

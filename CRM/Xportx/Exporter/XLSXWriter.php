@@ -68,7 +68,7 @@ class CRM_Xportx_Exporter_XLSXWriter extends CRM_Xportx_Exporter
         // compile header + write
         $sheet_name = CRM_Utils_Array::value('sheet_name', $this->config, 'Sheet1');
         $fields     = $this->export->getFieldList();
-        $headers    = array();
+        $headers    = [];
         foreach ($fields as $field) {
             $field_type = 'string';
             if (!empty($this->config['column_types'][$field['label']])) {
