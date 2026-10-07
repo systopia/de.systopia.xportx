@@ -15,8 +15,6 @@
 
 use CRM_Xportx_ExtensionUtil as E;
 
-require_once 'CRM/Core/Form.php';
-
 /**
  * Form controller class
  *
